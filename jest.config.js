@@ -1,5 +1,6 @@
 module.exports = {
   roots: [
+    '<rootDir>/src',
     '<rootDir>/test',
   ],
   testEnvironment: 'node',
@@ -7,6 +8,7 @@ module.exports = {
     '.*\\.ts$': 'ts-jest',
   },
   moduleNameMapper: {
-    '@/(.*)': '<rootDir>/tests/$1',
+    '@/(.*)': '<rootDir>/src/$1',
+    '@test/(.*)': '<rootDir>/test/$1',
   },
 };
