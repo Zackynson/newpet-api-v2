@@ -2,6 +2,7 @@ interface UsersRepository {
   insert(user: User): Promise<void>
   list(): Promise<User[] | undefined>
   findById(id: string): Promise<User | undefined>
+  delete(id: string): Promise<void>
 }
 
 type User = {
@@ -27,13 +28,26 @@ class UsersRepositoryMock implements UsersRepository{
   async findById(id: string): Promise<User | undefined> {
     return this.users.find(u => u.id === id)
   }
+  async delete(id: string): Promise<void> {
+    const userIndex = this.users.findIndex(u => u.id === id)
+    if(userIndex < 0) throw new Error('User not found');
+    this.users.splice(userIndex, 1)
+  }
 }
 
 const makeSut = () => {
   const sut = new UsersRepositoryMock()
   const user = { id:'any_id', name: 'any_name', email: 'any_email', password:'any_password' } 
 
-  return { sut, user }
+
+  const mockUsersList = async () => {
+    await sut.insert({ id: '1', email:'email_1', password:'new_password', name:'new_user_1' })
+    await sut.insert({ id: '2', email:'email_2', password:'new_password', name:'new_user_2' })
+    await sut.insert({ id: '3', email:'email_3', password:'new_password', name:'new_user_3' })
+
+  }
+
+  return { sut, user, mockUsersList }
 }
  
 describe('UserManager', () => {
@@ -64,17 +78,20 @@ describe('UserManager', () => {
   })
 
   test('sut.list should not throw if list is empty', async () => {
-    const { sut } = makeSut()
+    const { sut,mockUsersList } = makeSut()
 
-    expect(sut.list()).resolves
+    await mockUsersList()
+    const usersList = await sut.list()
+
+    expect(usersList.length).toBe(3)
   })
 
 
   test('sut.findById should return an user if id exists', async () => {
-    const { sut, user } = makeSut()
+    const { sut, mockUsersList } = makeSut()
     const newUser = { id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user' }
 
-    await sut.insert(user)
+    await mockUsersList()
     await sut.insert(newUser)
 
     const foundUser = await sut.findById('new_user_id');
@@ -83,13 +100,21 @@ describe('UserManager', () => {
   })
 
   test('sut.findById should return undefined user is not found', async () => {
-    const { sut, user } = makeSut()
+    const { sut, mockUsersList } = makeSut()
     const newUser = { id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user' }
 
-    await sut.insert(user)
-    await sut.insert(newUser)
-    const foundUser = await sut.findById('invalid_id');
+    await mockUsersList()
+    const foundUser = await sut.findById(newUser.id);
 
     expect(foundUser).toEqual(undefined)
+  })
+
+  test('sut.delete should throw if user is not found', async () => {
+    const { sut, mockUsersList } = makeSut()
+
+    await mockUsersList()
+    const promise = sut.delete('invalid_id')
+
+    await expect(promise).rejects.toThrow()
   })
 })
