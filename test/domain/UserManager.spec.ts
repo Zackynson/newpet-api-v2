@@ -1,9 +1,10 @@
 interface UsersRepository {
   insert(user: User): Promise<void>
-  list(): Promise<User[]>
+  list(): Promise<User[] | undefined>
 }
 
 type User = {
+  id?: string; 
   email: string;
   password: string;
   name: string;
@@ -13,9 +14,9 @@ type User = {
 class UsersRepositoryMock implements UsersRepository{
   users: User[] = []
 
-  async insert({name, email, password}: User): Promise<void> {
-    if(this.users.some(user => user.email === email)) throw new Error('User already exists') 
-    this.users.push({name, email, password})
+  async insert(newUser: User): Promise<void> {
+    if(this.users.some(user => user.email === newUser.email)) throw new Error('User already exists') 
+    this.users.push(newUser)
   }
   
   async list(): Promise<User[]> {
@@ -25,7 +26,7 @@ class UsersRepositoryMock implements UsersRepository{
 
 const makeSut = () => {
   const sut = new UsersRepositoryMock()
-  const user = { name: 'any_name', email: 'any_email', password:'any_password'}
+  const user = { id:'any_id', name: 'any_name', email: 'any_email', password:'any_password' } 
 
   return { sut, user }
 }
@@ -57,10 +58,9 @@ describe('UserManager', () => {
     expect(users).toEqual(sut.users)
   })
 
-  test('Should sut.list should not throw if list is empty', async () => {
+  test('sut.list should not throw if list is empty', async () => {
     const { sut } = makeSut()
 
-
-    expect(sut.list()).resolves.toEqual([])
+    expect(sut.list()).resolves
   })
 })
