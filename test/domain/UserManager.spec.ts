@@ -28,6 +28,7 @@ class UsersRepositoryMock implements UsersRepository{
   async findById(id: string): Promise<User | undefined> {
     return this.users.find(u => u.id === id)
   }
+
   async delete(id: string): Promise<void> {
     const userIndex = this.users.findIndex(u => u.id === id)
     if(userIndex < 0) throw new Error('User not found');
@@ -116,5 +117,18 @@ describe('UserManager', () => {
     const promise = sut.delete('invalid_id')
 
     await expect(promise).rejects.toThrow()
+  })
+
+  test('sut.delete should delete user if id exists', async () => {
+    const { sut, mockUsersList } = makeSut()
+
+    await mockUsersList()
+
+    const userToBeDeleted = sut.users.find(u => u.id === '1') 
+    await sut.delete('1')
+    const userAfterDeletion = sut.users.find(u => u.id === '1') 
+
+     expect(userToBeDeleted?.id).toBe('1')
+     expect(userAfterDeletion?.id).toBe(undefined)
   })
 })
