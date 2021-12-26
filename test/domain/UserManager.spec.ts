@@ -72,7 +72,7 @@ describe('UserManager', () => {
 
   test('sut.findById should return an user if id exists', async () => {
     const { sut, user } = makeSut()
-    const newUser = {id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user'}
+    const newUser = { id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user' }
 
     await sut.insert(user)
     await sut.insert(newUser)
@@ -80,5 +80,17 @@ describe('UserManager', () => {
     const foundUser = await sut.findById('new_user_id');
 
     expect(foundUser).toEqual(newUser)
+  })
+
+  test('sut.findById should return an user if id exists', async () => {
+    const { sut, user } = makeSut()
+    const newUser = { id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user' }
+
+    await sut.insert(user)
+    await sut.insert(newUser)
+
+    const foundUser = await sut.findById('invalid_id');
+
+    expect(foundUser).toEqual(undefined)
   })
 })
