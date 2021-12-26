@@ -14,7 +14,7 @@ class UsersRepositoryMock implements UsersRepository{
 
 
   async insert({name, email, password}: User): Promise<void> {
-      if(this.users.some(user => user.email === email)) return 
+      if(this.users.some(user => user.email === email)) throw new Error('User already exists') 
       this.users.push({name, email, password})
   }
 }
@@ -35,12 +35,11 @@ describe('CreateUser', () => {
     expect(sut.users).toEqual([user])
   })
 
-  test('should not create two users with same email', async () => {
+  test('should throw an error if email already exists', async () => {
     const { sut, user } = makeSut()
 
-    await sut.insert(user);
-    await sut.insert(user);
+    const promise =  sut.insert(user);
 
-    expect(sut.users).toEqual([user])
+    expect(promise).rejects.toThrowError('User already exists')
   })
 })
