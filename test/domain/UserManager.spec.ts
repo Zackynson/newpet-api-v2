@@ -42,9 +42,10 @@ describe('UserManager', () => {
   test('should throw an error if email already exists', async () => {
     const { sut, user } = makeSut()
 
-    const promise =  sut.insert(user);
+    sut.insert(user);
+    const promise = sut.insert(user);
 
-    expect(promise).rejects.toThrowError('User already exists')
+    await expect(promise).rejects.toThrowError('User already exists')
   })
 
   test('Should bring an users list when list method is called', async () => {
