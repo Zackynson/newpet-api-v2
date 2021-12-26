@@ -13,15 +13,13 @@ type User = {
 class UsersRepositoryMock implements UsersRepository{
   users: User[] = []
 
+  async insert({name, email, password}: User): Promise<void> {
+    if(this.users.some(user => user.email === email)) throw new Error('User already exists') 
+    this.users.push({name, email, password})
+  }
   
   async list(): Promise<User[]> {
     return this.users;
-  }
-
-
-  async insert({name, email, password}: User): Promise<void> {
-      if(this.users.some(user => user.email === email)) throw new Error('User already exists') 
-      this.users.push({name, email, password})
   }
 }
 
@@ -56,5 +54,13 @@ describe('UserManager', () => {
     const users = await sut.list()
 
     expect(users).toEqual(sut.users)
+  })
+
+  test('Should sut.list should not throw if list is empty', async () => {
+    const { sut } = makeSut()
+
+    const users = await sut.list()
+
+    expect(users).toEqual([])
   })
 })
