@@ -1,3 +1,5 @@
+import { User } from "@/domain/entities/User";
+
 interface UsersRepository {
   insert(user: User): Promise<void>
   list(): Promise<User[] | undefined>
@@ -5,15 +7,7 @@ interface UsersRepository {
   delete(id: string): Promise<void>
 }
 
-type User = {
-  id?: string; 
-  email: string;
-  password: string;
-  name: string;
-
-}
-
-class UsersRepositoryMock implements UsersRepository{
+class UsersRepositoryMock implements UsersRepository {
   users: User[] = []
 
   async insert(newUser: User): Promise<void> {
