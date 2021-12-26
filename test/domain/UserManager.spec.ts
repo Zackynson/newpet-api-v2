@@ -26,7 +26,7 @@ const makeSut = () => {
   return { sut, user }
 }
  
-describe('CreateUser', () => {
+describe('UserManager', () => {
   test('should create a user', async () => {
     const { sut, user } = makeSut()
 
