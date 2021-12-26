@@ -82,7 +82,7 @@ describe('UserManager', () => {
     expect(foundUser).toEqual(newUser)
   })
 
-  test('sut.findById should return an user if id exists', async () => {
+  test('sut.findById should return undefined user is not found', async () => {
     const { sut, user } = makeSut()
     const newUser = { id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user' }
 
