@@ -14,7 +14,7 @@ const makeSut = () => {
   return { sut, user, mockUsersList }
 }
  
-describe('UserManager', () => {
+describe('ListUserUseCase', () => {
   test('Should bring an users list when list method is called', async () => {
     const { sut, user } = makeSut()
 
