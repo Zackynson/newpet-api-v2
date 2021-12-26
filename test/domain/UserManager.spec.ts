@@ -1,6 +1,7 @@
 interface UsersRepository {
   insert(user: User): Promise<void>
   list(): Promise<User[] | undefined>
+  findById(id: string): Promise<User | undefined>
 }
 
 type User = {
@@ -15,12 +16,16 @@ class UsersRepositoryMock implements UsersRepository{
   users: User[] = []
 
   async insert(newUser: User): Promise<void> {
-    if(this.users.some(user => user.email === newUser.email)) throw new Error('User already exists') 
+    if(this.users.some(u => u.email === newUser.email)) throw new Error('User already exists') 
     this.users.push(newUser)
   }
   
   async list(): Promise<User[]> {
     return this.users;
+  }
+
+  async findById(id: string): Promise<User | undefined> {
+    return this.users.find(u => u.id === id)
   }
 }
 
@@ -62,5 +67,18 @@ describe('UserManager', () => {
     const { sut } = makeSut()
 
     expect(sut.list()).resolves
+  })
+
+
+  test('sut.findById should return an user if id exists', async () => {
+    const { sut, user } = makeSut()
+    const newUser = {id: 'new_user_id', email:'new_email', password:'new_password', name:'new_user'}
+
+    await sut.insert(user)
+    await sut.insert(newUser)
+
+    const foundUser = await sut.findById('new_user_id');
+
+    expect(foundUser).toEqual(newUser)
   })
 })
