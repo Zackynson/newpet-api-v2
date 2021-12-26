@@ -60,8 +60,7 @@ describe('UserManager', () => {
   test('Should sut.list should not throw if list is empty', async () => {
     const { sut } = makeSut()
 
-    const users = await sut.list()
 
-    expect(users).toEqual([])
+    expect(sut.list()).resolves.toEqual([])
   })
 })
