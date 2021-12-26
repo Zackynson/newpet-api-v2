@@ -88,7 +88,6 @@ describe('UserManager', () => {
 
     await sut.insert(user)
     await sut.insert(newUser)
-
     const foundUser = await sut.findById('invalid_id');
 
     expect(foundUser).toEqual(undefined)
