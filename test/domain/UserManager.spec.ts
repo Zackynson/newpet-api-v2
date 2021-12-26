@@ -1,5 +1,6 @@
 interface UsersRepository {
   insert(user: User): Promise<void>
+  list(): Promise<User[]>
 }
 
 type User = {
@@ -11,6 +12,11 @@ type User = {
 
 class UsersRepositoryMock implements UsersRepository{
   users: User[] = []
+
+  
+  async list(): Promise<User[]> {
+    return this.users;
+  }
 
 
   async insert({name, email, password}: User): Promise<void> {
@@ -41,5 +47,14 @@ describe('UserManager', () => {
     const promise =  sut.insert(user);
 
     expect(promise).rejects.toThrowError('User already exists')
+  })
+
+  test('Should bring an users list when list method is called', async () => {
+    const { sut, user } = makeSut()
+
+    await sut.insert(user);
+    const users = await sut.list()
+
+    expect(users).toEqual(sut.users)
   })
 })
