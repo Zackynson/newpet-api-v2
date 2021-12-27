@@ -15,13 +15,4 @@ describe('Create user', () => {
 
     expect(sut.users).toEqual([user])
   })
-
-  test('should throw an error if email already exists', async () => {
-    const { sut, user } = makeSut()
-
-    sut.insert(user);
-    const promise = sut.insert(user);
-
-    await expect(promise).rejects.toThrowError('User already exists')
-  })
 })

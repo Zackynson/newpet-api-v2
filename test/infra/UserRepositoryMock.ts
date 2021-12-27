@@ -5,7 +5,6 @@ export class UsersRepositoryMock implements UsersRepository {
   users: User[] = []
 
   async insert(newUser: User): Promise<void> {
-    if(this.users.some(u => u.email === newUser.email)) throw new Error('User already exists') 
     this.users.push(newUser)
   }
   
@@ -15,6 +14,11 @@ export class UsersRepositoryMock implements UsersRepository {
 
   async findById(id: string): Promise<User | undefined> {
     return this.users.find(u => u.id === id)
+  }
+
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.users.find(u => u.email === email)
+
   }
 
   async delete(id: string): Promise<void> {

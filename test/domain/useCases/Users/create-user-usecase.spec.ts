@@ -42,4 +42,17 @@ describe('CreateUserUseCase', () => {
     await expect(sut.execute(user2)).rejects.toThrow()
   })
 
+  test('Should not create a user when password length is less than 8 chars', async() => {
+    const usersRepository = new UsersRepositoryMock()
+    const sut = new CreateUserUseCase(usersRepository)
+
+    const user: User = {
+      email: 'same@email.com',
+      name: 'any_name',
+      avatar_url: 'any_url',
+      password:'1234567'
+    }
+
+    await expect(sut.execute(user)).rejects.toThrow()
+  })
 })
