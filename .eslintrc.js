@@ -22,5 +22,6 @@ module.exports = {
     'import/extensions': 'off',
     'no-useless-constructor': 'off',
     'no-undef': 'off',
+    'class-methods-use-this': 'off',
   },
 };
