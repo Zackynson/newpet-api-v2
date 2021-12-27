@@ -1,4 +1,4 @@
-import { UsersRepositoryMock } from "@test/domain/repositories/UserRepositoryMock";
+import { UsersRepositoryMock } from "@test/data/UserRepositoryMock";
 
 const makeSut = () => {
   const sut = new UsersRepositoryMock()
@@ -7,7 +7,7 @@ const makeSut = () => {
   return { sut, user }
 }
 
-describe('CreateUserUseCase', () => {
+describe('Create user', () => {
   test('should create a user', async () => {
     const { sut, user } = makeSut()
 

@@ -1,1 +1,1 @@
-export * from './UserRepositoryMock'
+export * from '../../data/UserRepositoryMock'

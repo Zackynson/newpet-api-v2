@@ -1,4 +1,4 @@
-import { UsersRepositoryMock } from "@test/domain/repositories/UserRepositoryMock";
+import { UsersRepositoryMock } from "@test/data/UserRepositoryMock";
 
 const makeSut = () => {
   const sut = new UsersRepositoryMock()
