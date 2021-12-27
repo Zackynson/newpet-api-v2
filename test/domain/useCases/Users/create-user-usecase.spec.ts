@@ -1,4 +1,4 @@
-import { UsersRepositoryMock } from '@test/infra';
+import { UsersRepositoryMock } from '@test/infra/repositories';
 import { User } from '@/domain/entities/User';
 import { CreateUserUseCase } from '@/domain/useCases/CreateUserUseCase';
 
