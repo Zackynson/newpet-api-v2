@@ -1,13 +1,13 @@
-import { User } from "../entities/User";
+import { User } from '../entities/User';
 
 export type UpdateUserDTO = {
   id: string,
   data: {
-    name?: string; 
-    avatar_url?: string;
+    name?: string;
+    avatarUrl?: string;
     password?: string;
-    old_password?: string;
-    confirm_password?: string;
+    oldPassword?: string;
+    confirmPassword?: string;
   }
 }
 export interface UsersRepository {
@@ -16,5 +16,5 @@ export interface UsersRepository {
   findById(id: string): Promise<User | undefined>
   findByEmail(email: string): Promise<User | undefined>
   delete(id: string): Promise<void>
-  update({id, data}: UpdateUserDTO): Promise<void>
+  update({ id, data }: UpdateUserDTO): Promise<void>
 }
