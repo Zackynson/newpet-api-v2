@@ -3,9 +3,16 @@ import { CreateUserUseCase } from "@/domain/useCases/CreateUserUseCase"
 import { UsersRepositoryMock } from "@test/infra"
 
 describe('CreateUserUseCase', () => {
-  test('Should create a user when passing valid params', async() => {
+  const makeSut = () => {
     const usersRepository = new UsersRepositoryMock()
     const sut = new CreateUserUseCase(usersRepository)
+
+    return {usersRepository, sut}
+  }
+ 
+
+  test('Should create a user when passing valid params', async() => {
+   const {usersRepository, sut} = makeSut()
 
     const user: User = {
       email: 'any_email@email.com',
@@ -20,8 +27,7 @@ describe('CreateUserUseCase', () => {
   })
 
   test('Should not create a user when email already registered', async() => {
-    const usersRepository = new UsersRepositoryMock()
-    const sut = new CreateUserUseCase(usersRepository)
+    const {usersRepository, sut} = makeSut()
 
     const user: User = {
       email: 'same@email.com',
@@ -43,8 +49,8 @@ describe('CreateUserUseCase', () => {
   })
 
   test('Should not create a user when password length is less than 8 chars', async() => {
-    const usersRepository = new UsersRepositoryMock()
-    const sut = new CreateUserUseCase(usersRepository)
+    const { sut } = makeSut()
+
 
     const user: User = {
       email: 'same@email.com',
