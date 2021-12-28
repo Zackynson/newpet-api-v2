@@ -120,6 +120,26 @@ describe('UpdateUserUseCase', () => {
     await expect(promise).rejects.toThrow('password and confirmPassword does not match');
   });
 
+  test('Should throw an error when trying to update password without confirmPassword', async () => {
+    const { createUserUseCase, sut } = makeSut();
+
+    const user: User = {
+      email: 'any_email@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: 'any_password',
+    };
+
+    await createUserUseCase.execute(user);
+
+    const promise = sut.execute('1', {
+      oldPassword: 'any_password',
+      password: 'newPassword123',
+    });
+
+    await expect(promise).rejects.toThrow('confirmPassword not informed');
+  });
+
   test('Should throw an error when trying to update password with less than 8 chars', async () => {
     const { createUserUseCase, sut } = makeSut();
 

@@ -22,16 +22,15 @@ export class UpdateUserUseCase {
     const foundUser = await this.usersRepository.findById(id);
     if (!foundUser) throw new Error('User not found');
 
-    const newUser: User = { ...foundUser };
+    const updateUser: User = { ...foundUser };
 
-    if (data.name) newUser.name = data.name;
-    if (data.email) newUser.email = data.email;
-    if (data.avatarUrl) newUser.avatarUrl = data.avatarUrl;
+    if (data.name) updateUser.name = data.name;
+    if (data.email) updateUser.email = data.email;
+    if (data.avatarUrl) updateUser.avatarUrl = data.avatarUrl;
 
     if (data.password) {
       if (data.password.trim().length < 8) throw new Error('password should have at least 8 chars');
       if (!data.oldPassword) throw new Error('oldPassword not informed');
-      if (!data.password) throw new Error('password not informed');
       if (!data.confirmPassword) throw new Error('confirmPassword not informed');
       if (data.password !== data.confirmPassword) throw new Error('password and confirmPassword does not match');
 
@@ -39,9 +38,9 @@ export class UpdateUserUseCase {
       const oldPasswordIsValid = await this.encriptionHelper.compare(data.oldPassword, foundUser.password);
       if (!oldPasswordIsValid) throw new Error('oldPassword is invalid');
 
-      newUser.password = data.password;
+      updateUser.password = data.password;
     }
 
-    return this.usersRepository.update({ id, user: newUser });
+    return this.usersRepository.update({ id, user: updateUser });
   }
 }
