@@ -16,27 +16,6 @@ describe('UpdateUserUseCase', () => {
     };
   };
 
-  test('Should update a user when informing valid params', async () => {
-    const { usersRepository, createUserUseCase, sut } = makeSut();
-
-    const user: User = {
-      email: 'any_email@email.com',
-      name: 'any_name',
-      avatarUrl: 'any_url',
-      password: 'any_password',
-    };
-
-    await createUserUseCase.execute(user);
-
-    await sut.execute('1', {
-      name: 'updated',
-      email: 'updated@email.com',
-      avatarUrl: 'updated_url',
-    });
-
-    expect(usersRepository.users[0].email).toBe('updated@email.com');
-  });
-
   test('Should update a user when an invalid id is informed', async () => {
     const { createUserUseCase, sut } = makeSut();
 
@@ -159,5 +138,57 @@ describe('UpdateUserUseCase', () => {
     });
 
     await expect(promise).rejects.toThrow('password should have at least 8 chars');
+  });
+
+  test('Should update a users name, email and avatarUrl', async () => {
+    const { usersRepository, createUserUseCase, sut } = makeSut();
+
+    const user: User = {
+      email: 'any_email@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: 'any_password',
+    };
+
+    await createUserUseCase.execute(user);
+
+    await sut.execute('1', {
+      name: 'updated',
+      email: 'updated@email.com',
+      avatarUrl: 'updated_url',
+    });
+
+    expect(usersRepository.users[0].name).toBe('updated');
+    expect(usersRepository.users[0].email).toBe('updated@email.com');
+    expect(usersRepository.users[0].avatarUrl).toBe('updated_url');
+  });
+
+  test('Should update password', async () => {
+    const {
+      createUserUseCase, encriptionHelper, usersRepository, sut,
+    } = makeSut();
+
+    const user: User = {
+      email: 'any_email@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: 'any_password',
+    };
+
+    await createUserUseCase.execute(user);
+
+    const userBeforeUpdate = await usersRepository.findById('1');
+
+    await sut.execute('1', {
+      oldPassword: 'any_password',
+      password: 'newPassword',
+      confirmPassword: 'newPassword',
+    });
+
+    const userAfterUpdate = await usersRepository.findById('1');
+    const newPasswordIsValid = await encriptionHelper.compare('newPassword', userAfterUpdate?.password || '');
+
+    expect(userBeforeUpdate?.password).not.toEqual(userAfterUpdate?.password);
+    expect(newPasswordIsValid).toBe(true);
   });
 });

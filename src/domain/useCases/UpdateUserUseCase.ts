@@ -38,7 +38,7 @@ export class UpdateUserUseCase {
       const oldPasswordIsValid = await this.encriptionHelper.compare(data.oldPassword, foundUser.password);
       if (!oldPasswordIsValid) throw new Error('oldPassword is invalid');
 
-      updateUser.password = data.password;
+      updateUser.password = await this.encriptionHelper.encrypt(data.password);
     }
 
     return this.usersRepository.update({ id, user: updateUser });
