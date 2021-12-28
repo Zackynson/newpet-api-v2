@@ -16,7 +16,7 @@ describe('UpdateUserUseCase', () => {
     };
   };
 
-  test('Should update a user when passing valid params', async () => {
+  test('Should update a user when informing valid params', async () => {
     const { usersRepository, createUserUseCase, sut } = makeSut();
 
     const user: User = {
@@ -35,6 +35,27 @@ describe('UpdateUserUseCase', () => {
     });
 
     expect(usersRepository.users[0].email).toBe('updated@email.com');
+  });
+
+  test('Should update a user when an invalid id is informed', async () => {
+    const { createUserUseCase, sut } = makeSut();
+
+    const user: User = {
+      email: 'any_email@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: 'any_password',
+    };
+
+    await createUserUseCase.execute(user);
+
+    const promise = sut.execute('invalid_id', {
+      name: 'updated',
+      email: 'updated@email.com',
+      avatarUrl: 'updated_url',
+    });
+
+    await expect(promise).rejects.toThrow('User not found');
   });
 
   test('Should throw an error when trying to update password without oldPassword', async () => {
