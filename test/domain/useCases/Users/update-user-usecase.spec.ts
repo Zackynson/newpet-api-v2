@@ -29,7 +29,9 @@ describe('UpdateUserUseCase', () => {
     await createUserUseCase.execute(user);
 
     await sut.execute('1', {
+      name: 'updated',
       email: 'updated@email.com',
+      avatarUrl: 'updated_url',
     });
 
     expect(usersRepository.users[0].email).toBe('updated@email.com');
