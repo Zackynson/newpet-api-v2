@@ -1,10 +1,10 @@
-import { UsersRepositoryMock } from '@test/infra/repositories';
+import { MemoryUsersRepository } from '@test/infra/repositories';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 import { FindUserByIdUseCase } from '@/data/useCases';
 
 describe('FindUserByIdUseCase', () => {
   const makeSut = () => {
-    const usersRepository = new UsersRepositoryMock();
+    const usersRepository = new MemoryUsersRepository();
     const encriptionHelper = new BcryptEncryptionHelper();
     const sut = new FindUserByIdUseCase(usersRepository);
 

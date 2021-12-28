@@ -1,7 +1,7 @@
-import { UsersRepositoryMock } from '@test/infra/repositories';
+import { MemoryUsersRepository } from '@test/infra/repositories';
 
 const makeSut = () => {
-  const sut = new UsersRepositoryMock();
+  const sut = new MemoryUsersRepository();
 
   return { sut };
 };

@@ -1,7 +1,7 @@
 import { User } from '@/domain/entities/User';
 import { UsersRepository } from '@/domain/repositories/UsersRepository';
 
-export class UsersRepositoryMock implements UsersRepository {
+export class MemoryUsersRepository implements UsersRepository {
   users: User[] = []
 
   async insert(newUser: User): Promise<void> {
