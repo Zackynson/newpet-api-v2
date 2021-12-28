@@ -1,31 +1,22 @@
 import { UsersRepositoryMock } from '@test/infra/repositories';
-import { User } from '@/domain/entities/User';
-import { CreateUserUseCase, FindUserByIdUseCase } from '@/data/useCases';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
+import { FindUserByIdUseCase } from '@/data/useCases';
 
 describe('FindUserByIdUseCase', () => {
   const makeSut = () => {
     const usersRepository = new UsersRepositoryMock();
     const encriptionHelper = new BcryptEncryptionHelper();
-    const createUserUseCase = new CreateUserUseCase(usersRepository, encriptionHelper);
     const sut = new FindUserByIdUseCase(usersRepository);
 
     return {
-      usersRepository, createUserUseCase, encriptionHelper, sut,
+      usersRepository,
+      encriptionHelper,
+      sut,
     };
   };
 
   test('Should throw an error if an invalid id is informed', async () => {
-    const { createUserUseCase, sut } = makeSut();
-
-    const user: User = {
-      email: 'any_email@email.com',
-      name: 'any_name',
-      avatarUrl: 'any_url',
-      password: 'any_password',
-    };
-
-    await createUserUseCase.execute(user);
+    const { sut } = makeSut();
 
     const promise = sut.execute('invalid_id');
 
