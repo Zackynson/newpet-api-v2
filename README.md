@@ -1,12 +1,12 @@
 # newpet-api-v2
 Nova versão da api do newpet. 
-Feita com typescript e testada com jest. 
-Ainda nao implementada em producao.
+Criada usando TDD, conceitos de SOLID e Typescript. 
 
 ## install
-
 * npm install
 
 ## test
-
 * npm test
+
+# run
+ainda nao precisa :) 
