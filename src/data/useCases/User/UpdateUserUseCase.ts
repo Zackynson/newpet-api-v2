@@ -1,18 +1,9 @@
 import { UsersRepository } from '@/domain/repositories';
 import { User } from '@/domain/entities/User';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
+import { IUpdateUserUseCase, UpdateUserDTO } from '@/domain/useCases';
 
-type UpdateUserDTO = {
-
-  name?:string,
-  email?:string,
-  avatarUrl?:string,
-  oldPassword?:string,
-  password?:string,
-  confirmPassword?:string,
-}
-
-export class UpdateUserUseCase {
+export class UpdateUserUseCase implements IUpdateUserUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly encriptionHelper: EncryptionHelper,

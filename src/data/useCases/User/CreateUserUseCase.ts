@@ -1,8 +1,9 @@
 import { UsersRepository } from '@/domain/repositories';
 import { User } from '@/domain/entities/User';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
+import { ICreateUserUseCase } from '@/domain/useCases';
 
-export class CreateUserUseCase {
+export class CreateUserUseCase implements ICreateUserUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
     private readonly encriptionHelper: EncryptionHelper,

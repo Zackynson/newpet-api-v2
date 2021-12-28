@@ -1,6 +1,6 @@
 import { UsersRepositoryMock } from '@test/infra/repositories';
 import { User } from '@/domain/entities/User';
-import { CreateUserUseCase } from '@/domain/useCases/CreateUserUseCase';
+import { CreateUserUseCase } from '@/data/useCases';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
 describe('CreateUserUseCase', () => {

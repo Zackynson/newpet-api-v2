@@ -1,8 +1,7 @@
 import { UsersRepositoryMock } from '@test/infra/repositories';
 import { User } from '@/domain/entities/User';
-import { CreateUserUseCase } from '@/domain/useCases/CreateUserUseCase';
+import { CreateUserUseCase, UpdateUserUseCase } from '@/data/useCases';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
-import { UpdateUserUseCase } from '@/domain/useCases/UpdateUserUseCase';
 
 describe('UpdateUserUseCase', () => {
   const makeSut = () => {
