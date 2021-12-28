@@ -8,5 +8,5 @@ Criada usando TDD, conceitos de SOLID e Typescript.
 ## test
 * npm test
 
-# run
-ainda nao precisa :) 
+## run
+* ainda nao precisa :) 
