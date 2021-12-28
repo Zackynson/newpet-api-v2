@@ -22,4 +22,19 @@ describe('DeleteUserUseCase', () => {
 
     await expect(promise).rejects.toThrow('User not found');
   });
+
+  test('Should delete user if id is valid', async () => {
+    const { sut, usersRepository } = makeSut();
+
+    await usersRepository.mockUsersList();
+
+    const userBeforeDeletion = usersRepository.users[0];
+    await sut.execute(userBeforeDeletion?.id || '');
+
+    // eslint-disable-next-line max-len
+    const userAfterDeletion = usersRepository.users.find((foundUser) => foundUser?.id === userBeforeDeletion?.id);
+
+    expect(userBeforeDeletion).not.toBe(undefined);
+    expect(userAfterDeletion).toBe(undefined);
+  });
 });
