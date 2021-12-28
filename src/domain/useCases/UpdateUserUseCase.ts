@@ -29,6 +29,7 @@ export class UpdateUserUseCase {
     if (data.avatarUrl) newUser.avatarUrl = data.avatarUrl;
 
     if (data.password) {
+      if (data.password.trim().length < 8) throw new Error('password should have at least 8 chars');
       if (!data.oldPassword) throw new Error('oldPassword not informed');
       if (!data.password) throw new Error('password not informed');
       if (!data.confirmPassword) throw new Error('confirmPassword not informed');
