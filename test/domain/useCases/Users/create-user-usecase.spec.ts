@@ -64,7 +64,7 @@ describe('CreateUserUseCase', () => {
   });
 
   test('User password should be encrypted before inserted', async () => {
-    const { sut, encriptionHelper, usersRepository } = makeSut();
+    const { sut, usersRepository } = makeSut();
 
     const user: User = {
       email: 'same@email.com',
@@ -74,9 +74,9 @@ describe('CreateUserUseCase', () => {
     };
 
     await sut.execute(user);
-
     const insertedUser = await usersRepository.findByEmail(user.email);
 
-    expect(user).not.toBe(insertedUser?.password);
+    expect(insertedUser?.email).toBe(user.email);
+    expect(insertedUser?.password).not.toBe(user?.password);
   });
 });
