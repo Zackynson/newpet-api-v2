@@ -29,7 +29,7 @@ describe('UpdateUserUseCase', () => {
     const promise = sut.update({
       id: 'invalid_id',
       user: {
-        email: 'email_1', password: 'new_password', name: 'new_user_1',
+        email: 'any_email', password: 'any_password', name: 'any_name',
       },
     });
 
