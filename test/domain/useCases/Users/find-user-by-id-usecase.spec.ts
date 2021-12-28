@@ -22,4 +22,15 @@ describe('FindUserByIdUseCase', () => {
 
     await expect(promise).rejects.toThrow('User not found');
   });
+
+  test('Should return user if id is valid', async () => {
+    const { sut, usersRepository } = makeSut();
+
+    await usersRepository.mockUsersList();
+
+    const firstUserOnList = usersRepository.users[0];
+    const promise = sut.execute(firstUserOnList.id || '');
+
+    await expect(promise).resolves.toEqual(firstUserOnList);
+  });
 });
