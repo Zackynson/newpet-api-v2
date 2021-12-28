@@ -5,7 +5,7 @@ export class UsersRepositoryMock implements UsersRepository {
   users: User[] = []
 
   async insert(newUser: User): Promise<void> {
-    this.users.push(newUser);
+    this.users.push({ id: (this.users.length + 1).toString(), ...newUser });
   }
 
   async list(): Promise<User[]> {
