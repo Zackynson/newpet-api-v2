@@ -1,5 +1,5 @@
 import { User } from '@/domain/entities/User';
-import { UsersRepository } from '@/domain/repositories/UsersRepository';
+import { UpdateUserParams, UsersRepository } from '@/domain/repositories/UsersRepository';
 
 export class MemoryUsersRepository implements UsersRepository {
   users: User[] = []
@@ -26,11 +26,11 @@ export class MemoryUsersRepository implements UsersRepository {
     this.users.splice(userIndex, 1);
   }
 
-  async update({ id, user }: {id:string, user:User}): Promise<void> {
+  async update({ id, data }: { id:string, data: UpdateUserParams }): Promise<void> {
     const userIndex = this.users.findIndex((u) => u.id === id);
     if (userIndex < 0) throw new Error('User not found');
 
-    const updatedUser = { ...this.users[userIndex], ...user };
+    const updatedUser = { ...this.users[userIndex], ...data };
 
     this.users.splice(userIndex, 1);
     this.users.push(updatedUser);

@@ -6,7 +6,7 @@ const makeSut = () => {
   return { sut };
 };
 
-describe('UpdateUserUseCase', () => {
+describe('UsersRepository', () => {
   test('sut.update should throw if user is not found', async () => {
     const { sut } = makeSut();
 
@@ -14,8 +14,10 @@ describe('UpdateUserUseCase', () => {
 
     const promise = sut.update({
       id: 'invalid_id',
-      user: {
-        email: 'any_email', password: 'any_password', name: 'any_name',
+      data: {
+        email: 'any_email',
+        password: 'any_password',
+        name: 'any_name',
       },
     });
 

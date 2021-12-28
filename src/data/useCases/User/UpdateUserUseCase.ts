@@ -1,5 +1,4 @@
-import { UsersRepository } from '@/domain/repositories';
-import { User } from '@/domain/entities/User';
+import { UpdateUserParams, UsersRepository } from '@/domain/repositories';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
 import { IUpdateUserUseCase, UpdateUserDTO } from '@/domain/useCases';
 
@@ -13,25 +12,27 @@ export class UpdateUserUseCase implements IUpdateUserUseCase {
     const foundUser = await this.usersRepository.findById(id);
     if (!foundUser) throw new Error('User not found');
 
-    const updateUser: User = { ...foundUser };
+    const {
+      oldPassword, password, confirmPassword, ...rest
+    } = data;
 
-    if (data.name) updateUser.name = data.name;
-    if (data.email) updateUser.email = data.email;
-    if (data.avatarUrl) updateUser.avatarUrl = data.avatarUrl;
+    const updateData: UpdateUserParams = {
+      ...rest,
+    };
 
-    if (data.password) {
-      if (data.password.trim().length < 8) throw new Error('password should have at least 8 chars');
-      if (!data.oldPassword) throw new Error('oldPassword not informed');
-      if (!data.confirmPassword) throw new Error('confirmPassword not informed');
-      if (data.password !== data.confirmPassword) throw new Error('password and confirmPassword does not match');
+    if (password) {
+      if (password.trim().length < 8) throw new Error('password should have at least 8 chars');
+      if (!oldPassword) throw new Error('oldPassword not informed');
+      if (!confirmPassword) throw new Error('confirmPassword not informed');
+      if (password !== confirmPassword) throw new Error('password and confirmPassword does not match');
 
       // eslint-disable-next-line max-len
-      const oldPasswordIsValid = await this.encriptionHelper.compare(data.oldPassword, foundUser.password);
+      const oldPasswordIsValid = await this.encriptionHelper.compare(oldPassword, foundUser.password);
       if (!oldPasswordIsValid) throw new Error('oldPassword is invalid');
 
-      updateUser.password = await this.encriptionHelper.encrypt(data.password);
+      updateData.password = await this.encriptionHelper.encrypt(password);
     }
 
-    return this.usersRepository.update({ id, user: updateUser });
+    return this.usersRepository.update({ id, data: updateData });
   }
 }
