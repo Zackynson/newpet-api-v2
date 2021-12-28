@@ -80,7 +80,7 @@ describe('MemoryUsersRepository', () => {
     const userAfterDeletion = sut.users.find((u) => u.id === '1');
 
     expect(userToBeDeleted?.id).toBe('1');
-    expect(userAfterDeletion?.id).toBe(undefined);
+    expect(userAfterDeletion).toBe(undefined);
   });
 
   test('sut.update should throw if user is not found', async () => {
