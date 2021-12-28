@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --no-cache --watchAll"
+    "test": "jest --no-cache --watchAll",
+    "coverage": "jest --coverage"
   },
   "author": "",
   "license": "ISC",
