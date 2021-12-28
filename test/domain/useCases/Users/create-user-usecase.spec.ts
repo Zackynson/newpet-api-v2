@@ -49,7 +49,6 @@ describe('CreateUserUseCase', () => {
     await expect(sut.execute(user2)).rejects.toThrow();
   });
 
-  // eslint-disable-next-line no-undef
   test('Should not create a user when password length is less than 8 chars', async () => {
     const { sut } = makeSut();
 
@@ -78,5 +77,24 @@ describe('CreateUserUseCase', () => {
 
     expect(insertedUser?.email).toBe(user.email);
     expect(insertedUser?.password).not.toBe(user?.password);
+  });
+
+  test('User password hash should be comparable', async () => {
+    const { sut, usersRepository, encriptionHelper } = makeSut();
+
+    const user: User = {
+      email: 'same@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: '12345678',
+    };
+
+    await sut.execute(user);
+    const insertedUser = await usersRepository.findByEmail(user.email);
+    const passwordMatch = await encriptionHelper.compare(user.password, insertedUser?.password || '');
+
+    expect(insertedUser?.email).toBe(user.email);
+    expect(insertedUser?.password).not.toBe(user?.password);
+    expect(passwordMatch).toBe(true);
   });
 });
