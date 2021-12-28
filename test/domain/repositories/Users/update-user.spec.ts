@@ -26,7 +26,12 @@ describe('UpdateUserUseCase', () => {
     const { sut, mockUsersList } = makeSut();
 
     await mockUsersList();
-    const promise = sut.update({ id: 'invalid_id', data: {} });
+    const promise = sut.update({
+      id: 'invalid_id',
+      user: {
+        email: 'email_1', password: 'new_password', name: 'new_user_1',
+      },
+    });
 
     await expect(promise).rejects.toThrow();
   });
