@@ -1,13 +1,15 @@
 import { UsersRepositoryMock } from '@test/infra/repositories';
 import { User } from '@/domain/entities/User';
 import { CreateUserUseCase } from '@/domain/useCases/CreateUserUseCase';
+import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
 describe('CreateUserUseCase', () => {
   const makeSut = () => {
     const usersRepository = new UsersRepositoryMock();
-    const sut = new CreateUserUseCase(usersRepository);
+    const encriptionHelper = new BcryptEncryptionHelper();
+    const sut = new CreateUserUseCase(usersRepository, encriptionHelper);
 
-    return { usersRepository, sut };
+    return { usersRepository, encriptionHelper, sut };
   };
 
   test('Should create a user when passing valid params', async () => {
@@ -22,7 +24,7 @@ describe('CreateUserUseCase', () => {
 
     await sut.execute(user);
 
-    expect(usersRepository.users[0]).toEqual(user);
+    expect(usersRepository.users[0].email).toBe(user.email);
   });
 
   test('Should not create a user when email already registered', async () => {
@@ -59,5 +61,22 @@ describe('CreateUserUseCase', () => {
     };
 
     await expect(sut.execute(user)).rejects.toThrow();
+  });
+
+  test('User password should be encrypted before inserted', async () => {
+    const { sut, encriptionHelper, usersRepository } = makeSut();
+
+    const user: User = {
+      email: 'same@email.com',
+      name: 'any_name',
+      avatarUrl: 'any_url',
+      password: '12345678',
+    };
+
+    await sut.execute(user);
+
+    const insertedUser = await usersRepository.findByEmail(user.email);
+
+    expect(user).not.toBe(insertedUser?.password);
   });
 });
