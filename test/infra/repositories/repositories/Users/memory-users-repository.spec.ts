@@ -99,4 +99,31 @@ describe('MemoryUsersRepository', () => {
 
     await expect(promise).rejects.toThrow();
   });
+
+  test('sut.update should update an valid user', async () => {
+    const { sut } = makeSut();
+
+    await sut.mockUsersList();
+
+    const userBeforeUpdate = sut.users.find((foundUser) => foundUser.id === '1');
+
+    await sut.update({
+      id: '1',
+      data: {
+        email: 'updated_email',
+        password: 'updated_password',
+        name: 'updated_name',
+        avatarUrl: 'updated_url',
+      },
+    });
+
+    const userAfterUpdate = sut.users.find((foundUser) => foundUser.id === '1');
+
+    expect(userBeforeUpdate.id).toBe('1');
+    expect(userBeforeUpdate.id).toBe(userAfterUpdate.id);
+    expect(userBeforeUpdate.name).not.toBe(userAfterUpdate.name);
+    expect(userBeforeUpdate.email).not.toBe(userAfterUpdate.email);
+    expect(userBeforeUpdate.password).not.toBe(userAfterUpdate.password);
+    expect(userBeforeUpdate.avatarUrl).not.toBe(userAfterUpdate.avatarUrl);
+  });
 });
