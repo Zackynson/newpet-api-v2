@@ -21,7 +21,26 @@ describe('RegisterPetUseCase', () => {
     const promise = registerPetUseCase.execute(pet);
 
     await expect(promise).resolves.not.toThrow();
-    expect(petsRepository.pets.includes(pet)).toBe(true);
+  });
+
+  test('Should include pet id on its owner pets array', async () => {
+    const pet:Pet = {
+      name: 'any_name',
+      age: 1,
+      category: 'cat',
+      ownerId: '1',
+    };
+
+    const petsRepository = new MemoryPetsRepository();
+    const usersRepository = new MemoryUsersRepository();
+    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
+
+    await usersRepository.mockUsersList();
+    const registeredPet = await registerPetUseCase.execute(pet);
+
+    const petowner = usersRepository.users.find((user) => user.id === pet.ownerId);
+
+    expect(petowner?.pets?.includes(registeredPet.id)).toBe(true);
   });
 
   test('Should throw an error if ownerId is invalid', async () => {

@@ -8,7 +8,12 @@ export class MemoryPetsRepository implements PetsRepository {
     this.pets = [];
   }
 
-  async insert(pet: Pet): Promise<void> {
-    this.pets.push(pet);
+  async insert(pet: Pet): Promise<Pet> {
+    const id = (this.pets.length + 1).toString();
+    const newPet = { id, ...pet };
+
+    this.pets.push(newPet);
+
+    return newPet;
   }
 }

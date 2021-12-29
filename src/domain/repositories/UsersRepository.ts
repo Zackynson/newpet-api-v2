@@ -5,6 +5,7 @@ export type UpdateUserParams = {
   email?:string,
   avatarUrl?:string,
   password?:string,
+  pets?: string[]
 }
 export interface UsersRepository {
   insert(user: User): Promise<void>
