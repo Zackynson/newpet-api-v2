@@ -40,6 +40,7 @@ describe('RegisterPetUseCase', () => {
 
     const petowner = usersRepository.users.find((user) => user.id === pet.ownerId);
 
+    expect(petsRepository?.pets?.includes(registeredPet)).toBe(true);
     expect(petowner?.pets?.includes(registeredPet.id)).toBe(true);
   });
 
