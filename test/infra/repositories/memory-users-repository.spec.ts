@@ -1,4 +1,4 @@
-import { MemoryUsersRepository } from '@test/infra/repositories';
+import { MemoryUsersRepository } from '@/infra/repositories';
 
 const makeSut = () => {
   const sut = new MemoryUsersRepository();

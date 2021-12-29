@@ -1,4 +1,4 @@
-import { MemoryUsersRepository } from '@test/infra/repositories';
+import { MemoryUsersRepository } from '@/infra/repositories';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 import { FindUserByIdUseCase } from '@/data/useCases';
 
