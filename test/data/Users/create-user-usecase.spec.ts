@@ -1,6 +1,6 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
 import { User } from '@/domain/entities/User';
-import { CreateUserUseCase } from '@/data/useCases';
+import { CreateUserUseCase } from '@/data/useCases/User';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
 describe('CreateUserUseCase', () => {

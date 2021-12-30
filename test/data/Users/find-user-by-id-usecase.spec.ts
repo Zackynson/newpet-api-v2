@@ -1,6 +1,6 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
-import { FindUserByIdUseCase } from '@/data/useCases';
+import { FindUserByIdUseCase } from '@/data/useCases/User';
 
 describe('FindUserByIdUseCase', () => {
   const makeSut = () => {

@@ -1,5 +1,5 @@
 import { UsersRepository } from '@/domain/repositories';
-import { IDeleteUserUseCase } from '@/domain/useCases';
+import { IDeleteUserUseCase } from '@/domain/useCases/User';
 
 export class DeleteUserUseCase implements IDeleteUserUseCase {
   constructor(

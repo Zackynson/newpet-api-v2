@@ -1,6 +1,6 @@
 import { UsersRepository } from '@/domain/repositories';
 import { User } from '@/domain/entities/User';
-import { IFindUserByIdUseCase } from '@/domain/useCases';
+import { IFindUserByIdUseCase } from '@/domain/useCases/User';
 
 export class FindUserByIdUseCase implements IFindUserByIdUseCase {
   constructor(

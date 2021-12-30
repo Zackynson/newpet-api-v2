@@ -1,6 +1,6 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
-import { DeleteUserUseCase } from '@/data/useCases';
+import { DeleteUserUseCase } from '@/data/useCases/User';
 
 describe('DeleteUserUseCase', () => {
   const makeSut = () => {
