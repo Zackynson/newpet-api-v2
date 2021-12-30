@@ -24,8 +24,6 @@ export class MemoryPetsRepository implements PetsRepository {
   async update(id: string, data: UpdatePetParams): Promise<Pet> {
     const foundPet = this.pets.find((p) => p.id === id);
 
-    if (!foundPet) throw new Error('Pet not found');
-
     const updatedPet:Pet = {
       ...foundPet,
       ...data,
