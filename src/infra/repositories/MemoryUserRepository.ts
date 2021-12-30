@@ -39,13 +39,13 @@ export class MemoryUsersRepository implements UsersRepository {
   async mockUsersList(): Promise<void> {
     const usersList = [
       {
-        id: '1', email: 'email_1', password: 'new_password', name: 'new_user_1',
+        id: '1', email: 'email_1', password: 'new_password', name: 'new_user_1', pets: ['1'],
       },
       {
-        id: '2', email: 'email_2', password: 'new_password', name: 'new_user_2',
+        id: '2', email: 'email_2', password: 'new_password', name: 'new_user_2', pets: ['2'],
       },
       {
-        id: '3', email: 'email_3', password: 'new_password', name: 'new_user_3',
+        id: '3', email: 'email_3', password: 'new_password', name: 'new_user_3', pets: ['3'],
       },
     ];
 

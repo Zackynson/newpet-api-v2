@@ -57,4 +57,26 @@ describe('UpdatePetUseCase', () => {
 
     await expect(promise).rejects.toThrow('Pet not found on users account');
   });
+
+  test('Should update a pet', async () => {
+    const updateData:UpdatePetParams = {
+      name: 'any_name',
+      age: 1,
+      category: 'cat',
+      pictures: ['new_pic_1'],
+    };
+
+    const petsRepository = new MemoryPetsRepository();
+    const usersRepository = new MemoryUsersRepository();
+    const updatePetUseCase = new UpdatePetUseCase(petsRepository, usersRepository);
+
+    await usersRepository.mockUsersList();
+    await petsRepository.mockPetsList();
+
+    const petBeforeUpdate = await petsRepository.findByid('1');
+
+    const updatedPet = await updatePetUseCase.execute({ petId: '1', ownerId: '1', data: updateData });
+
+    expect(updatedPet).toEqual({ ...petBeforeUpdate, ...updateData });
+  });
 });
