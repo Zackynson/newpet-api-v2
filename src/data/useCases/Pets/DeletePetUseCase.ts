@@ -12,5 +12,8 @@ export class DeletePetUseCase implements IDeletePetUseCase {
 
     const foundPet = await this.petsRepository.findByid(petId);
     if (!foundPet) throw new Error('Pet not found');
+
+    const petIsRegisteredByUser = user?.pets?.includes(petId);
+    if (!petIsRegisteredByUser) throw new Error('Pet not found on users account');
   }
 }
