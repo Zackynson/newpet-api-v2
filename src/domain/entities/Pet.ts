@@ -4,4 +4,5 @@ export type Pet = {
   age: number;
   category: 'cat' | 'dog' | 'bird' | 'other';
   ownerId: string;
+  pictures?: string[]
 }
