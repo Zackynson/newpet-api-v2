@@ -44,6 +44,32 @@ describe('RegisterPetUseCase', () => {
     expect(petowner?.pets?.includes(registeredPet.id)).toBe(true);
   });
 
+  test('Should create pets array if user doesnt have one', async () => {
+    const pet:Pet = {
+      name: 'any_name',
+      age: 1,
+      category: 'cat',
+      ownerId: '1',
+    };
+
+    const petsRepository = new MemoryPetsRepository();
+    const usersRepository = new MemoryUsersRepository();
+    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
+
+    await usersRepository.insert({
+      name: 'user_without_pets_array',
+      email: 'user_without@pets_array.com',
+      password: '12345678',
+    });
+
+    const registeredPet = await registerPetUseCase.execute(pet);
+
+    const petowner = usersRepository.users.find((user) => user.id === pet.ownerId);
+
+    expect(petsRepository?.pets?.includes(registeredPet)).toBe(true);
+    expect(petowner?.pets?.includes(registeredPet.id)).toBe(true);
+  });
+
   test('Should throw an error if ownerId is invalid', async () => {
     const pet:Pet = {
       name: 'any_name',
