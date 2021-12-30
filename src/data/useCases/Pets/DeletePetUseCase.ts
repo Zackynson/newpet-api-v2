@@ -9,5 +9,8 @@ export class DeletePetUseCase implements IDeletePetUseCase {
   async execute(petId:string, ownerId:string):Promise<void> {
     const user = await this.usersRepository.findById(ownerId);
     if (!user) throw new Error('User not found');
+
+    const foundPet = await this.petsRepository.findByid(petId);
+    if (!foundPet) throw new Error('Pet not found');
   }
 }
