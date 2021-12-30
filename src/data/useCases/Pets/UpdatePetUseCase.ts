@@ -11,11 +11,11 @@ export class UpdatePetUseCase implements IUpdatePetUseCase {
     const user = await this.usersRepository.findById(ownerId);
     if (!user) throw new Error('User not found');
 
-    const petIsRegisteredByUser = user?.pets?.includes(petId);
-    if (!petIsRegisteredByUser) throw new Error('Pet not found on users account');
-
     const foundPet = await this.petsRepository.findByid(petId);
     if (!foundPet) throw new Error('Pet not found');
+
+    const petIsRegisteredByUser = user.pets.includes(petId);
+    if (!petIsRegisteredByUser) throw new Error('Pet not found on users account');
 
     const updatedPet = await this.petsRepository.update(foundPet.id, data);
 
