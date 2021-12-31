@@ -11,4 +11,5 @@ export interface PetsRepository {
   findByid(id: string): Promise<Pet | undefined>
   update(id: string, data: UpdatePetParams): Promise<Pet | undefined>
   delete(id: string): Promise<void>
+  list():Promise<Pet[]>
 }

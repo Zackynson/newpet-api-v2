@@ -79,4 +79,8 @@ export class MemoryPetsRepository implements PetsRepository {
 
     this.pets.push(...petsList);
   }
+
+  async list():Promise<Pet[]> {
+    return this.pets;
+  }
 }
