@@ -33,4 +33,13 @@ describe('ListPetsUseCase', () => {
 
     expect(petsList).toEqual(petsMock);
   });
+
+  test('Should bring an empty list of pets', async () => {
+    const petsRepository = new MemoryPetsRepository();
+    const listPetsUseCase = new ListPetsUseCase(petsRepository);
+
+    const petsList = await listPetsUseCase.execute();
+
+    expect(petsList).toEqual([]);
+  });
 });
