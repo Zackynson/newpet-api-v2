@@ -10,7 +10,6 @@ export class MemoryPetsRepository implements PetsRepository {
 
   async delete(id: string): Promise<void> {
     const userIndex = this.pets.findIndex((p) => p.id === id);
-    if (userIndex < 0) throw new Error('Pet not found');
     this.pets.splice(userIndex, 1);
   }
 

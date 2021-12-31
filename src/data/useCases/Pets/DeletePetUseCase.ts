@@ -20,7 +20,7 @@ export class DeletePetUseCase implements IDeletePetUseCase {
     await this.usersRepository.update({
       id: ownerId,
       data: {
-        pets: user?.pets?.filter((p) => p !== petId),
+        pets: user.pets.filter((p) => p !== petId),
       },
     });
   }
