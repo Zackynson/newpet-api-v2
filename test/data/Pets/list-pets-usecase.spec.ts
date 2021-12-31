@@ -3,7 +3,16 @@ import { Pet } from '@/domain/entities';
 import { ListPetsUseCase } from '@/data/useCases/Pets';
 
 describe('ListPetsUseCase', () => {
+  const makeSut = () => {
+    const petsRepository = new MemoryPetsRepository();
+    const sut = new ListPetsUseCase(petsRepository);
+
+    return { sut, petsRepository };
+  };
+
   test('Should bring a list of pets', async () => {
+    const { sut, petsRepository } = makeSut();
+
     const petsMock:Pet[] = [{
       id: '1',
       name: 'any_name',
@@ -24,21 +33,17 @@ describe('ListPetsUseCase', () => {
       ownerId: '1',
     }];
 
-    const petsRepository = new MemoryPetsRepository();
-    const listPetsUseCase = new ListPetsUseCase(petsRepository);
-
     petsRepository.pets.push(...petsMock);
 
-    const petsList = await listPetsUseCase.execute();
+    const petsList = await sut.execute();
 
     expect(petsList).toEqual(petsMock);
   });
 
   test('Should bring an empty list of pets', async () => {
-    const petsRepository = new MemoryPetsRepository();
-    const listPetsUseCase = new ListPetsUseCase(petsRepository);
+    const { sut } = makeSut();
 
-    const petsList = await listPetsUseCase.execute();
+    const petsList = await sut.execute();
 
     expect(petsList).toEqual([]);
   });

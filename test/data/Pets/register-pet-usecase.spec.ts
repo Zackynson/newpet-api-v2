@@ -4,7 +4,17 @@ import { MemoryPetsRepository } from '@/infra/repositories/MemoryPetsRepository'
 import { MemoryUsersRepository } from '@/infra/repositories';
 
 describe('RegisterPetUseCase', () => {
+  const makeSut = () => {
+    const petsRepository = new MemoryPetsRepository();
+    const usersRepository = new MemoryUsersRepository();
+    const sut = new RegisterPetUseCase(petsRepository, usersRepository);
+
+    return { sut, petsRepository, usersRepository };
+  };
+
   test('Should register a pet', async () => {
+    const { sut, usersRepository } = makeSut();
+
     const pet:Pet = {
       name: 'any_name',
       age: 1,
@@ -12,18 +22,16 @@ describe('RegisterPetUseCase', () => {
       ownerId: '1',
     };
 
-    const petsRepository = new MemoryPetsRepository();
-    const usersRepository = new MemoryUsersRepository();
-    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
-
     await usersRepository.mockUsersList();
 
-    const promise = registerPetUseCase.execute(pet);
+    const promise = sut.execute(pet);
 
     await expect(promise).resolves.not.toThrow();
   });
 
   test('Should include pet id on its owner pets array', async () => {
+    const { sut, usersRepository, petsRepository } = makeSut();
+
     const pet:Pet = {
       name: 'any_name',
       age: 1,
@@ -31,12 +39,8 @@ describe('RegisterPetUseCase', () => {
       ownerId: '1',
     };
 
-    const petsRepository = new MemoryPetsRepository();
-    const usersRepository = new MemoryUsersRepository();
-    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
-
     await usersRepository.mockUsersList();
-    const registeredPet = await registerPetUseCase.execute(pet);
+    const registeredPet = await sut.execute(pet);
 
     const petowner = usersRepository.users.find((user) => user.id === pet.ownerId);
 
@@ -45,6 +49,8 @@ describe('RegisterPetUseCase', () => {
   });
 
   test('Should create pets array if user doesnt have one', async () => {
+    const { sut, usersRepository, petsRepository } = makeSut();
+
     const pet:Pet = {
       name: 'any_name',
       age: 1,
@@ -52,17 +58,13 @@ describe('RegisterPetUseCase', () => {
       ownerId: '1',
     };
 
-    const petsRepository = new MemoryPetsRepository();
-    const usersRepository = new MemoryUsersRepository();
-    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
-
     await usersRepository.insert({
       name: 'user_without_pets_array',
       email: 'user_without@pets_array.com',
       password: '12345678',
     });
 
-    const registeredPet = await registerPetUseCase.execute(pet);
+    const registeredPet = await sut.execute(pet);
 
     const petowner = usersRepository.users.find((user) => user.id === pet.ownerId);
 
@@ -71,6 +73,8 @@ describe('RegisterPetUseCase', () => {
   });
 
   test('Should throw an error if ownerId is invalid', async () => {
+    const { sut, petsRepository } = makeSut();
+
     const pet:Pet = {
       name: 'any_name',
       age: 1,
@@ -78,11 +82,7 @@ describe('RegisterPetUseCase', () => {
       ownerId: 'invalid_id',
     };
 
-    const petsRepository = new MemoryPetsRepository();
-    const usersRepository = new MemoryUsersRepository();
-    const registerPetUseCase = new RegisterPetUseCase(petsRepository, usersRepository);
-
-    const promise = registerPetUseCase.execute(pet);
+    const promise = sut.execute(pet);
 
     await expect(promise).rejects.toThrow('User not found');
     expect(petsRepository.pets.includes(pet)).toBe(false);
