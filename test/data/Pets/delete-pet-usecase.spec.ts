@@ -51,4 +51,44 @@ describe('DeletePetUseCase', () => {
 
     await expect(promise).rejects.toThrow('Pet not found on users account');
   });
+
+  test('Should delete a Pet and remove id from user petsArray', async () => {
+    const petsRepository = new MemoryPetsRepository();
+    const usersRepository = new MemoryUsersRepository();
+    const deletePetUseCase = new DeletePetUseCase(petsRepository, usersRepository);
+
+    await usersRepository.mockUsersList();
+    await petsRepository.mockPetsList();
+
+    const petToBeDeleted = {
+      id: 'to_be_deleted',
+      name: 'any_name',
+      category: 'cat',
+      age: 1,
+      ownerId: 'any',
+    };
+
+    petsRepository.pets.push({
+      id: 'to_be_deleted',
+      name: 'any_name',
+      category: 'cat',
+      age: 1,
+      ownerId: 'any',
+    });
+
+    usersRepository.users.find((u) => u.id === '1')?.pets?.push('to_be_deleted');
+
+    const petBeforeDelete = await petsRepository.findByid('to_be_deleted');
+    const { pets: usersPetArrayBeforeDelete } = await usersRepository.findById('1');
+    expect(petBeforeDelete).toEqual(petToBeDeleted);
+    expect(usersPetArrayBeforeDelete).toContain(petToBeDeleted.id);
+
+    await deletePetUseCase.execute('to_be_deleted', '1');
+
+    const petAfterDelete = await petsRepository.findByid('to_be_deleted');
+    const { pets: usersPetArrayAfterDelete } = await usersRepository.findById('1');
+
+    expect(petAfterDelete).toBe(undefined);
+    expect(usersPetArrayAfterDelete).not.toContain(petToBeDeleted.id);
+  });
 });

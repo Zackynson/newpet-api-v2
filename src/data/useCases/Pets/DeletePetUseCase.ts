@@ -15,5 +15,13 @@ export class DeletePetUseCase implements IDeletePetUseCase {
 
     const petIsRegisteredByUser = user.pets.includes(petId);
     if (!petIsRegisteredByUser) throw new Error('Pet not found on users account');
+
+    await this.petsRepository.delete(petId);
+    await this.usersRepository.update({
+      id: ownerId,
+      data: {
+        pets: user?.pets?.filter((p) => p !== petId),
+      },
+    });
   }
 }
