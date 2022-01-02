@@ -7,7 +7,7 @@
     "test": "jest --no-cache --watchAll",
     "coverage": "jest --coverage"
   },
-  "author": "",
+  "author": "Crystopher Carvalho",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1"
