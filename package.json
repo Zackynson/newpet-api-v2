@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --no-cache --watchAll",
+    "test:staged": "jest --no-cache",
     "coverage": "jest --coverage"
   },
   "author": "Crystopher Carvalho",
