@@ -2,7 +2,7 @@ import { User } from '@/domain/entities/User';
 import { UpdateUserParams, UsersRepository } from '@/domain/repositories/UsersRepository';
 
 export class MemoryUsersRepository implements UsersRepository {
-  users: User[] = []
+  users: User[] = [];
 
   async insert(newUser: User): Promise<void> {
     this.users.push({ id: (this.users.length + 1).toString(), ...newUser });
