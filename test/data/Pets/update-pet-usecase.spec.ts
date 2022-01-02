@@ -1,6 +1,5 @@
 import { UpdatePetUseCase } from '@/data/useCases/Pets';
-import { MemoryPetsRepository } from '@/infra/repositories/MemoryPetsRepository';
-import { MemoryUsersRepository } from '@/infra/repositories';
+import { MemoryPetsRepository, MemoryUsersRepository } from '@/infra/repositories';
 import { UpdatePetParams } from '@/domain/repositories/PetsRepository';
 
 describe('UpdatePetUseCase', () => {

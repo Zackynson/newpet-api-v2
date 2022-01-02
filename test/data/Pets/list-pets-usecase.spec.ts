@@ -1,4 +1,4 @@
-import { MemoryPetsRepository } from '@/infra/repositories/MemoryPetsRepository';
+import { MemoryPetsRepository } from '@/infra/repositories';
 import { Pet } from '@/domain/entities';
 import { ListPetsUseCase } from '@/data/useCases/Pets';
 

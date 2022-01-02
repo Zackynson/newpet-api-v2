@@ -1,6 +1,5 @@
 import { DeletePetUseCase } from '@/data/useCases/Pets';
-import { MemoryPetsRepository } from '@/infra/repositories/MemoryPetsRepository';
-import { MemoryUsersRepository } from '@/infra/repositories';
+import { MemoryPetsRepository, MemoryUsersRepository } from '@/infra/repositories';
 
 describe('DeletePetUseCase', () => {
   const makeSut = () => {

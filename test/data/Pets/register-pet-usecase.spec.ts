@@ -1,7 +1,6 @@
 import { Pet } from '@/domain/entities';
 import { RegisterPetUseCase } from '@/data/useCases/Pets';
-import { MemoryPetsRepository } from '@/infra/repositories/MemoryPetsRepository';
-import { MemoryUsersRepository } from '@/infra/repositories';
+import { MemoryPetsRepository, MemoryUsersRepository } from '@/infra/repositories';
 
 describe('RegisterPetUseCase', () => {
   const makeSut = () => {
