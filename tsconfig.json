@@ -10,6 +10,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "allowJs": true,
     "rootDirs": ["src", "test"],
     "target": "es2015",
     "module": "commonjs",
