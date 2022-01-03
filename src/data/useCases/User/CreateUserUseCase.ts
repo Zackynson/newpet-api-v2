@@ -1,7 +1,7 @@
 import { UsersRepository } from '@/infra/protocols';
 import { User } from '@/domain/entities/User';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
-import { ICreateUserUseCase } from '@/domain/useCases/User';
+import { ICreateUserUseCase } from '@/data/useCases/protocols/User';
 
 export class CreateUserUseCase implements ICreateUserUseCase {
   constructor(

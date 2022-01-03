@@ -1,6 +1,6 @@
 import { UsersRepository } from '@/infra/protocols';
 import { User } from '@/domain/entities/User';
-import { IFindUserByIdUseCase } from '@/domain/useCases/User';
+import { IFindUserByIdUseCase } from '@/data/useCases/protocols/User';
 
 export class FindUserByIdUseCase implements IFindUserByIdUseCase {
   constructor(

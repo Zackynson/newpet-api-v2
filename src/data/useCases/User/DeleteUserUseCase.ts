@@ -1,5 +1,5 @@
 import { UsersRepository } from '@/infra/protocols';
-import { IDeleteUserUseCase } from '@/domain/useCases/User';
+import { IDeleteUserUseCase } from '@/data/useCases/protocols/User';
 
 export class DeleteUserUseCase implements IDeleteUserUseCase {
   constructor(

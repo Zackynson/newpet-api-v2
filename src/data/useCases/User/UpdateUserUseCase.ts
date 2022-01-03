@@ -1,6 +1,6 @@
 import { UpdateUserParams, UsersRepository } from '@/infra/protocols';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
-import { IUpdateUserUseCase, UpdateUserDTO } from '@/domain/useCases/User';
+import { IUpdateUserUseCase, UpdateUserDTO } from '@/data/useCases/protocols/User';
 
 export class UpdateUserUseCase implements IUpdateUserUseCase {
   constructor(
