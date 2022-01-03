@@ -1,4 +1,4 @@
-import { UsersRepository } from '@/domain/repositories';
+import { UsersRepository } from '@/infra/protocols';
 import { User } from '@/domain/entities/User';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
 import { ICreateUserUseCase } from '@/domain/useCases/User';

@@ -1,4 +1,4 @@
-import { UsersRepository } from '@/domain/repositories';
+import { UsersRepository } from '@/infra/protocols';
 import { IDeleteUserUseCase } from '@/domain/useCases/User';
 
 export class DeleteUserUseCase implements IDeleteUserUseCase {

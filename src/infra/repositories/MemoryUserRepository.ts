@@ -1,5 +1,5 @@
 import { User } from '@/domain/entities/User';
-import { UpdateUserParams, UsersRepository } from '@/domain/repositories/UsersRepository';
+import { UpdateUserParams, UsersRepository } from '@/infra/protocols/UsersRepository';
 
 export class MemoryUsersRepository implements UsersRepository {
   users: User[] = [];

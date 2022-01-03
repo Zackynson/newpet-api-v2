@@ -1,5 +1,5 @@
-import { UsersRepository } from '@/domain/repositories';
-import { PetsRepository } from '@/domain/repositories/PetsRepository';
+import { UsersRepository } from '@/infra/protocols';
+import { PetsRepository } from '@/infra/protocols/PetsRepository';
 import { IDeletePetUseCase } from '@/domain/useCases/Pets';
 
 export class DeletePetUseCase implements IDeletePetUseCase {

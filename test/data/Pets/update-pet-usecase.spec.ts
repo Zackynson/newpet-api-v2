@@ -1,6 +1,6 @@
 import { UpdatePetUseCase } from '@/data/useCases/Pets';
 import { MemoryPetsRepository, MemoryUsersRepository } from '@/infra/repositories';
-import { UpdatePetParams } from '@/domain/repositories/PetsRepository';
+import { UpdatePetParams } from '@/infra/protocols/PetsRepository';
 
 describe('UpdatePetUseCase', () => {
   const makeSut = () => {

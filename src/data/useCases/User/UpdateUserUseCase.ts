@@ -1,4 +1,4 @@
-import { UpdateUserParams, UsersRepository } from '@/domain/repositories';
+import { UpdateUserParams, UsersRepository } from '@/infra/protocols';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
 import { IUpdateUserUseCase, UpdateUserDTO } from '@/domain/useCases/User';
 

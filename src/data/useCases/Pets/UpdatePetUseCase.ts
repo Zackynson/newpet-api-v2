@@ -1,6 +1,6 @@
 import { Pet } from '@/domain/entities';
-import { UsersRepository } from '@/domain/repositories';
-import { PetsRepository } from '@/domain/repositories/PetsRepository';
+import { UsersRepository } from '@/infra/protocols';
+import { PetsRepository } from '@/infra/protocols/PetsRepository';
 import { IUpdatePetUseCase, UpdatePetDTO } from '@/domain/useCases/Pets';
 
 export class UpdatePetUseCase implements IUpdatePetUseCase {

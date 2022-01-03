@@ -1,4 +1,4 @@
-import { Pet } from '../entities';
+import { Pet } from '@/domain/entities';
 
 export type UpdatePetParams = {
   name?: string;
