@@ -23,9 +23,15 @@ export class SignUpControllerStub implements Controller {
   }
 }
 
+const makeSut = () => {
+  const sut = new SignUpControllerStub();
+
+  return { sut };
+};
+
 describe('SignUpController', () => {
-  test('Should returns 400 if no name is informed', async () => {
-    const sut = new SignUpControllerStub();
+  test('Should returns 400 if no name is provided', async () => {
+    const { sut } = makeSut();
 
     const request = {
       body: {
@@ -42,8 +48,8 @@ describe('SignUpController', () => {
     expect(response.data).toEqual(new Error('Missing Param: name'));
   });
 
-  test('Should returns 400 if no email is informed', async () => {
-    const sut = new SignUpControllerStub();
+  test('Should returns 400 if no email is provided', async () => {
+    const { sut } = makeSut();
 
     const request = {
       body: {
