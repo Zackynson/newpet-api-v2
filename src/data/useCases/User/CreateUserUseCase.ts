@@ -16,7 +16,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
     if (user.password.trim().length < 8) throw new Error('Password should have at least 8 chars');
 
     const encryptedPassword = await this.encriptionHelper.encrypt(user.password);
-    const newUser = { ...user, password: encryptedPassword };
+    const newUser = { ...user, password: encryptedPassword, pets: [] };
 
     return this.usersRepository.insert(newUser);
   }
