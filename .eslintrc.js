@@ -24,5 +24,6 @@ module.exports = {
     'no-undef': 'off',
     'class-methods-use-this': 'off',
     'function-paren-newline': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
   },
 };
