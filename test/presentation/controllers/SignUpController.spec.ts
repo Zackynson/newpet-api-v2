@@ -1,4 +1,5 @@
 /* eslint-disable max-classes-per-file */
+import { badRequest, ok, serverError } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
 import { Controller, EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
@@ -10,36 +11,17 @@ export class SignUpControllerMock implements Controller {
     try {
       const { name, email } = httpRequest.body || {};
 
-      if (!name) {
-        return {
-          data: new MissingParamError('name'),
-          statusCode: 400,
-        };
-      }
+      if (!name) return badRequest(new MissingParamError('name'));
 
-      if (!email) {
-        return {
-          data: new MissingParamError('email'),
-          statusCode: 400,
-        };
-      }
+      if (!email) return badRequest(new MissingParamError('email'));
 
-      const emailIsValid = await this.emailValidator.validate(email);
-      if (!emailIsValid) {
-        return {
-          data: new InvalidParamError('email'),
-          statusCode: 400,
-        };
-      }
+      const emailIsValid = this.emailValidator.validate(email);
 
-      return {
-        statusCode: 200,
-      };
+      if (!emailIsValid) return badRequest(new InvalidParamError('email'));
+
+      return ok();
     } catch (error) {
-      return {
-        data: new ServerError(),
-        statusCode: 500,
-      };
+      return serverError();
     }
   }
 }
