@@ -109,6 +109,25 @@ describe('SignUpController', () => {
     expect(response.data).toEqual(new MissingParamError('confirmPassword'));
   });
 
+  test('Should returns 400 if passwordConfirmation is different from password', async () => {
+    const { sut } = makeSut();
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'invalid_email',
+        password: 'any_password',
+        confirmPassword: 'invalid_password',
+        avatarUrl: 'any_password',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new InvalidParamError('confirmPassword'));
+  });
+
   test('Should returns 500 if emailValidator throws', async () => {
     const { sut, emailValidator } = makeSut();
 
