@@ -9,12 +9,6 @@ class EmailValidatorStub implements EmailValidator {
   }
 }
 
-class EmailValidatorWithError implements EmailValidator {
-  validate(email: string): boolean {
-    throw new Error();
-  }
-}
-
 const makeSut = () => {
   const emailValidator = new EmailValidatorStub();
   const sut = new SignUpController(emailValidator);
