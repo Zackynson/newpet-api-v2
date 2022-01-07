@@ -2,14 +2,16 @@ import { badRequest, ok, serverError } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
 import { Controller, EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError } from '@/presentation/errors';
+import { ICreateUserUseCase } from '@/data/useCases/protocols/User';
 
 export class SignUpController implements Controller {
-  constructor(private readonly emailValidator: EmailValidator) {}
+  constructor(private readonly emailValidator: EmailValidator,
+    private readonly createUserUseCase: ICreateUserUseCase) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const {
-        name, email, password, confirmPassword,
+        name, email, password, confirmPassword, avatarUrl,
       } = httpRequest.body || {};
 
       if (!name) return badRequest(new MissingParamError('name'));
@@ -23,6 +25,9 @@ export class SignUpController implements Controller {
 
       if (!emailIsValid) return badRequest(new InvalidParamError('email'));
 
+      this.createUserUseCase.execute({
+        name, email, password, avatarUrl,
+      });
       return ok();
     } catch (error) {
       return serverError();
