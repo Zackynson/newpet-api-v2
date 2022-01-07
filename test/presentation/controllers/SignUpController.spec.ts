@@ -229,6 +229,15 @@ describe('SignUpController', () => {
     });
   });
 
+  test('Should return 400 if no params are provided', async () => {
+    const { sut } = makeSut();
+
+    const response = await sut.handle({});
+
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new MissingParamError('name'));
+  });
+
   test('Should return 200 if valid params are provided', async () => {
     const { sut } = makeSut();
 
