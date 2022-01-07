@@ -4,9 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --no-cache --watchAll",
-    "test:staged": "jest --no-cache --passWithNoTests",
-    "coverage": "jest --coverage"
+    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:verbose": "jest --passWithNoTests --runInBand",
+    "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "test:integration": "npm test -- --watch -c jest-integration-config.js",
+    "test:staged": "npm test -- --findRelatedTests",
+    "test:ci": "npm test -- --coverage",
+    "coverage": "npm test -- --coverage"
   },
   "author": "Crystopher Carvalho",
   "license": "ISC",
