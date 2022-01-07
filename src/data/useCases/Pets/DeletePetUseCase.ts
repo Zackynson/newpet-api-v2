@@ -1,5 +1,4 @@
-import { UsersRepository } from '@/infra/protocols';
-import { PetsRepository } from '@/infra/protocols/PetsRepository';
+import { UsersRepository, PetsRepository } from '@/data/protocols';
 import { IDeletePetUseCase } from '@/domain/useCases/Pets';
 
 export class DeletePetUseCase implements IDeletePetUseCase {

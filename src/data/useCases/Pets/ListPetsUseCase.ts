@@ -1,5 +1,5 @@
 import { Pet } from '@/domain/entities';
-import { PetsRepository } from '@/infra/protocols/PetsRepository';
+import { PetsRepository } from '@/data/protocols/PetsRepository';
 import { IListPetsUseCase } from '@/domain/useCases/Pets';
 
 export class ListPetsUseCase implements IListPetsUseCase {

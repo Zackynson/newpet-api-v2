@@ -1,5 +1,5 @@
 import { Pet } from '@/domain/entities';
-import { PetsRepository, UpdatePetParams } from '@/infra/protocols/PetsRepository';
+import { PetsRepository, UpdatePetParams } from '@/data/protocols/PetsRepository';
 
 export class MemoryPetsRepository implements PetsRepository {
   readonly pets:Pet[];

@@ -1,5 +1,5 @@
 import { Pet } from '@/domain/entities';
-import { UpdatePetParams } from '@/infra/protocols/PetsRepository';
+import { UpdatePetParams } from '@/data/protocols/PetsRepository';
 
 export type UpdatePetDTO = { petId: string, ownerId: string, data: UpdatePetParams }
 

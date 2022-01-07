@@ -1,4 +1,4 @@
-import { UsersRepository } from '@/infra/protocols';
+import { UsersRepository } from '@/data/protocols';
 import { User } from '@/domain/entities/User';
 import { IFindUserByIdUseCase } from '@/domain/useCases/User';
 

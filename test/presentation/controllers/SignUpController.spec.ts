@@ -3,7 +3,7 @@ import { EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
 import { SignUpController } from '@/presentation/controllers/SignUp';
 import { CreateUserUseCase } from '@/data/useCases/User';
-import { CreateUserParams, UpdateUserParams, UsersRepository } from '@/infra/protocols';
+import { CreateUserParams, UpdateUserParams, UsersRepository } from '@/data/protocols';
 import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
 
