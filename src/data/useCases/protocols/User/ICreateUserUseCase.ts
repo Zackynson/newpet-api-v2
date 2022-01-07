@@ -1,3 +1,5 @@
+import { User } from '@/domain/entities';
+
 export type CreateUserUseCaseParams = {
   avatarUrl?: string;
   email: string;
@@ -5,5 +7,5 @@ export type CreateUserUseCaseParams = {
   name: string;
 }
 export interface ICreateUserUseCase {
-  execute(user: CreateUserUseCaseParams):Promise<void>
+  execute(user: CreateUserUseCaseParams):Promise<User>
 }

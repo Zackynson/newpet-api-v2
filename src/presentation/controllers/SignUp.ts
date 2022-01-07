@@ -25,10 +25,11 @@ export class SignUpController implements Controller {
 
       if (!emailIsValid) return badRequest(new InvalidParamError('email'));
 
-      this.createUserUseCase.execute({
+      const user = await this.createUserUseCase.execute({
         name, email, password, avatarUrl,
       });
-      return ok();
+
+      return ok(user);
     } catch (error) {
       return serverError();
     }

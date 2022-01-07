@@ -4,8 +4,10 @@ import { UsersRepository, CreateUserParams, UpdateUserParams } from '@/infra/pro
 export class MemoryUsersRepository implements UsersRepository {
   users: User[] = [];
 
-  async insert(newUser: CreateUserParams): Promise<void> {
-    this.users.push({ id: (this.users.length + 1).toString(), ...newUser });
+  async insert(newUser: CreateUserParams): Promise<User> {
+    const user = { id: (this.users.length + 1).toString(), ...newUser };
+    this.users.push(user);
+    return user;
   }
 
   async list(): Promise<User[]> {

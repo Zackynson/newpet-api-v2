@@ -16,7 +16,7 @@ export type UpdateUserParams = {
   pets?: string[]
 }
 export interface UsersRepository {
-  insert(user: CreateUserParams): Promise<void>
+  insert(user: CreateUserParams): Promise<User>
   list(): Promise<User[] | undefined>
   findById(id: string): Promise<User | undefined>
   findByEmail(email: string): Promise<User | undefined>
