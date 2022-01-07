@@ -1,5 +1,5 @@
 import { UsersRepository } from '@/infra/protocols';
-import { ICreateUserUseCase, CreateUserUseCaseParams } from '@/data/useCases/protocols/User';
+import { ICreateUserUseCase, CreateUserUseCaseParams } from '@/domain/useCases/User';
 import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
 

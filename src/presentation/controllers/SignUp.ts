@@ -2,7 +2,7 @@ import { badRequest, ok, serverError } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
 import { Controller, EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError } from '@/presentation/errors';
-import { ICreateUserUseCase } from '@/data/useCases/protocols/User';
+import { ICreateUserUseCase } from '@/domain/useCases/User';
 
 export class SignUpController implements Controller {
   constructor(private readonly emailValidator: EmailValidator,

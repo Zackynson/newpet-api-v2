@@ -1,6 +1,6 @@
 import { Pet } from '@/domain/entities';
 import { PetsRepository } from '@/infra/protocols/PetsRepository';
-import { IListPetsUseCase } from '@/data/useCases/protocols/Pets';
+import { IListPetsUseCase } from '@/domain/useCases/Pets';
 
 export class ListPetsUseCase implements IListPetsUseCase {
   constructor(private readonly petsRepository: PetsRepository) {}
