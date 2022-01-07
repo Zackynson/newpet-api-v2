@@ -2,18 +2,30 @@
 import { EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
 import { SignUpController } from '@/presentation/controllers/SignUp';
+import { CreateUserUseCase } from '@/data/useCases/User';
+import { MemoryUsersRepository } from '@/infra/repositories';
+import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
 class EmailValidatorStub implements EmailValidator {
-  validate(email: string): boolean {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  validate(_email: string): boolean {
     return true;
   }
 }
 
+const makeCreateUserUseCase = (): CreateUserUseCase => {
+  const memoryUsersRepository = new MemoryUsersRepository();
+  const encriptionHelper = new BcryptEncryptionHelper();
+  const createUserUseCase = new CreateUserUseCase(memoryUsersRepository, encriptionHelper);
+
+  return createUserUseCase;
+};
+
 const makeSut = () => {
   const emailValidator = new EmailValidatorStub();
-  const sut = new SignUpController(emailValidator);
-
-  return { sut, emailValidator };
+  const createUserUseCase = makeCreateUserUseCase();
+  const sut = new SignUpController(emailValidator, createUserUseCase);
+  return { sut, emailValidator, createUserUseCase };
 };
 
 describe('SignUpController', () => {
@@ -149,5 +161,30 @@ describe('SignUpController', () => {
 
     expect(response.statusCode).toBe(500);
     expect(response.data).toEqual(new ServerError());
+  });
+
+  test('Should call CreateUserUseCase.execute with correctParams', async () => {
+    const { sut, createUserUseCase } = makeSut();
+    const createUserUseCaseSpy = jest.spyOn(createUserUseCase, 'execute');
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_password',
+      },
+    };
+
+    await sut.handle(request);
+
+    expect(createUserUseCaseSpy).toBeCalledTimes(1);
+    expect(createUserUseCaseSpy).toBeCalledWith({
+      name: 'any_name',
+      email: 'any_email',
+      password: 'any_password',
+      avatarUrl: 'any_password',
+    });
   });
 });
