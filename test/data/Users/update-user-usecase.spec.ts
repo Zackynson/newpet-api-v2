@@ -1,5 +1,4 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
-import { User } from '@/domain/entities/User';
 import { CreateUserUseCase, UpdateUserUseCase } from '@/data/useCases/User';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
@@ -18,7 +17,7 @@ describe('UpdateUserUseCase', () => {
   test('Should update a user when an invalid id is informed', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -39,7 +38,7 @@ describe('UpdateUserUseCase', () => {
   test('Should throw an error when trying to update password without oldPassword', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -59,7 +58,7 @@ describe('UpdateUserUseCase', () => {
   test('Should throw an error when trying to update password using an invalid oldPassword', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -80,7 +79,7 @@ describe('UpdateUserUseCase', () => {
   test('Should throw an error when trying to update password with different confirmPassword', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -101,7 +100,7 @@ describe('UpdateUserUseCase', () => {
   test('Should throw an error when trying to update password without confirmPassword', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -121,7 +120,7 @@ describe('UpdateUserUseCase', () => {
   test('Should throw an error when trying to update password with less than 8 chars', async () => {
     const { createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -142,7 +141,7 @@ describe('UpdateUserUseCase', () => {
   test('Should update a users name, email and avatarUrl', async () => {
     const { usersRepository, createUserUseCase, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -167,7 +166,7 @@ describe('UpdateUserUseCase', () => {
       createUserUseCase, encriptionHelper, usersRepository, sut,
     } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',

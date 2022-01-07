@@ -1,5 +1,4 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
-import { User } from '@/domain/entities/User';
 import { CreateUserUseCase } from '@/data/useCases/User';
 import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
 
@@ -15,7 +14,7 @@ describe('CreateUserUseCase', () => {
   test('Should create a user when passing valid params', async () => {
     const { usersRepository, sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'any_email@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -30,14 +29,14 @@ describe('CreateUserUseCase', () => {
   test('Should not create a user when email already registered', async () => {
     const { sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'same@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
       password: 'any_password',
     };
 
-    const user2: User = {
+    const user2 = {
       email: 'same@email.com',
       name: 'another_name',
       avatarUrl: 'another_url',
@@ -52,7 +51,7 @@ describe('CreateUserUseCase', () => {
   test('Should not create a user when password length is less than 8 chars', async () => {
     const { sut } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'same@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -65,7 +64,7 @@ describe('CreateUserUseCase', () => {
   test('User password should be encrypted before inserted', async () => {
     const { sut, usersRepository } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'same@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
@@ -82,7 +81,7 @@ describe('CreateUserUseCase', () => {
   test('User password hash should be comparable', async () => {
     const { sut, usersRepository, encriptionHelper } = makeSut();
 
-    const user: User = {
+    const user = {
       email: 'same@email.com',
       name: 'any_name',
       avatarUrl: 'any_url',
