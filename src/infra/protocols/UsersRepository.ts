@@ -1,5 +1,13 @@
 import { User } from '@/domain/entities';
 
+export type CreateUserParams = {
+  name:string,
+  email:string,
+  password:string,
+  avatarUrl?:string,
+  pets?: string[]
+}
+
 export type UpdateUserParams = {
   name?:string,
   email?:string,
@@ -8,7 +16,7 @@ export type UpdateUserParams = {
   pets?: string[]
 }
 export interface UsersRepository {
-  insert(user: User): Promise<void>
+  insert(user: CreateUserParams): Promise<void>
   list(): Promise<User[] | undefined>
   findById(id: string): Promise<User | undefined>
   findByEmail(email: string): Promise<User | undefined>

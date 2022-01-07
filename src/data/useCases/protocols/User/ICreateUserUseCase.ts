@@ -1,5 +1,9 @@
-import { User } from '@/domain/entities/User';
-
+export type CreateUserUseCaseParams = {
+  avatarUrl?: string;
+  email: string;
+  password: string;
+  name: string;
+}
 export interface ICreateUserUseCase {
-  execute(user: User):Promise<void>
+  execute(user: CreateUserUseCaseParams):Promise<void>
 }

@@ -1,7 +1,6 @@
 import { UsersRepository } from '@/infra/protocols';
-import { User } from '@/domain/entities/User';
 import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
-import { ICreateUserUseCase } from '@/data/useCases/protocols/User';
+import { ICreateUserUseCase, CreateUserUseCaseParams } from '@/data/useCases/protocols/User';
 
 export class CreateUserUseCase implements ICreateUserUseCase {
   constructor(
@@ -9,7 +8,7 @@ export class CreateUserUseCase implements ICreateUserUseCase {
     private readonly encriptionHelper: EncryptionHelper,
   ) {}
 
-  async execute(user: User):Promise<void> {
+  async execute(user: CreateUserUseCaseParams):Promise<void> {
     const userExists = await this.usersRepository.findByEmail(user.email);
 
     if (userExists) throw new Error('User already exists');
