@@ -5,7 +5,7 @@ import { SignUpController } from '@/presentation/controllers/SignUp';
 import { CreateUserUseCase } from '@/data/useCases/User';
 import { CreateUserParams, UpdateUserParams, UsersRepository } from '@/infra/protocols';
 import { User } from '@/domain/entities';
-import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
+import { Encrypter } from '@/data/protocols/Encrypter';
 
 class EmailValidatorStub implements EmailValidator {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,7 +44,7 @@ class FakeUsersRepository implements UsersRepository {
   }
 }
 
-class FakeEncriptionHelper implements EncryptionHelper {
+class FakeEncriptionHelper implements Encrypter {
   async compare(_text: string, _hash: string): Promise<boolean> {
     return true;
   }

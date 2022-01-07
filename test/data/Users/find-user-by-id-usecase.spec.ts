@@ -1,11 +1,11 @@
 import { MemoryUsersRepository } from '@/infra/repositories';
-import { BcryptEncryptionHelper } from '@/infra/helpers/BcryptEncryptionHelper';
+import { BcryptEncrypter } from '@/infra/helpers/BcryptEncrypter';
 import { FindUserByIdUseCase } from '@/data/useCases/User';
 
 describe('FindUserByIdUseCase', () => {
   const makeSut = () => {
     const usersRepository = new MemoryUsersRepository();
-    const encriptionHelper = new BcryptEncryptionHelper();
+    const encriptionHelper = new BcryptEncrypter();
     const sut = new FindUserByIdUseCase(usersRepository);
 
     return {

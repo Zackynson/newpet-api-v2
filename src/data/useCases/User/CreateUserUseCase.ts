@@ -1,12 +1,12 @@
 import { UsersRepository } from '@/infra/protocols';
-import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
 import { ICreateUserUseCase, CreateUserUseCaseParams } from '@/data/useCases/protocols/User';
 import { User } from '@/domain/entities';
+import { Encrypter } from '@/data/protocols/Encrypter';
 
 export class CreateUserUseCase implements ICreateUserUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly encriptionHelper: EncryptionHelper,
+    private readonly encriptionHelper: Encrypter,
   ) {}
 
   async execute(user: CreateUserUseCaseParams):Promise<User> {

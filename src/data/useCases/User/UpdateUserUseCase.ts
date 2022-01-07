@@ -1,11 +1,12 @@
 import { UpdateUserParams, UsersRepository } from '@/infra/protocols';
-import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
+import { Encrypter } from '@/data/protocols/Encrypter';
+
 import { IUpdateUserUseCase, UpdateUserDTO } from '@/data/useCases/protocols/User';
 
 export class UpdateUserUseCase implements IUpdateUserUseCase {
   constructor(
     private readonly usersRepository: UsersRepository,
-    private readonly encriptionHelper: EncryptionHelper,
+    private readonly encriptionHelper: Encrypter,
   ) {}
 
   async execute(id: string, data: UpdateUserDTO):Promise<void> {

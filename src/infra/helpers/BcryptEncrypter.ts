@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
-import { EncryptionHelper } from '@/domain/helpers/EncryptionHelper';
+import { Encrypter } from '@/data/protocols/Encrypter';
 
-export class BcryptEncryptionHelper implements EncryptionHelper {
+export class BcryptEncrypter implements Encrypter {
   private readonly NUMBER_OF_SALTS = 8;
 
   async encrypt(text: string): Promise<string> {
