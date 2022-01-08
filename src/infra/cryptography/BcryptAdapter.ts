@@ -7,8 +7,4 @@ export class BcryptAdapter implements Encrypter {
   async encrypt(text: string): Promise<string> {
     return bcrypt.hash(text, this.salt);
   }
-
-  async compare(text: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(text, hash);
-  }
 }
