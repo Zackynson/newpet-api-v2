@@ -1,6 +1,11 @@
 /* eslint-disable max-classes-per-file */
 import { EmailValidator } from '@/presentation/protocols';
-import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
+import {
+  InvalidParamError,
+  MissingParamError,
+  ServerError,
+  UserAlreadyExistsError,
+} from '@/presentation/errors';
 import { SignUpController } from '@/presentation/controllers/SignUp';
 import { CreateUserUseCase } from '@/data/useCases/User';
 import { CreateUserParams, CreateUserRepository, FindUserByEmailRepository } from '@/data/protocols/Users';
@@ -8,7 +13,6 @@ import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
 
 class EmailValidatorStub implements EmailValidator {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   validate(_email: string): boolean {
     return true;
   }
@@ -39,7 +43,14 @@ class FakeEncriptionHelper implements Encrypter {
   }
 }
 
-const makeCreateUserUseCase = (): CreateUserUseCase => {
+type MakeCreateUserUseCaseTypes ={
+  createUserUseCase: CreateUserUseCase,
+  fakeCreateUserRepository: FakeCreateUserRepository,
+  fakeFindUserByEmailRepository: FakeFindUserByEmailRepository,
+  fakeEncriptionHelper: FakeEncriptionHelper
+}
+
+const makeCreateUserUseCase = (): MakeCreateUserUseCaseTypes => {
   const fakeCreateUserRepository = new FakeCreateUserRepository();
   const fakeFindUserByEmailRepository = new FakeFindUserByEmailRepository();
   const fakeEncriptionHelper = new FakeEncriptionHelper();
@@ -48,14 +59,31 @@ const makeCreateUserUseCase = (): CreateUserUseCase => {
     fakeFindUserByEmailRepository,
     fakeEncriptionHelper);
 
-  return createUserUseCase;
+  return {
+    createUserUseCase,
+    fakeCreateUserRepository,
+    fakeFindUserByEmailRepository,
+    fakeEncriptionHelper,
+  };
 };
 
 const makeSut = () => {
   const emailValidator = new EmailValidatorStub();
-  const createUserUseCase = makeCreateUserUseCase();
+  const {
+    createUserUseCase,
+    fakeCreateUserRepository,
+    fakeEncriptionHelper,
+    fakeFindUserByEmailRepository,
+  } = makeCreateUserUseCase();
   const sut = new SignUpController(emailValidator, createUserUseCase);
-  return { sut, emailValidator, createUserUseCase };
+  return {
+    sut,
+    emailValidator,
+    createUserUseCase,
+    fakeCreateUserRepository,
+    fakeEncriptionHelper,
+    fakeFindUserByEmailRepository,
+  };
 };
 
 describe('SignUpController', () => {
@@ -225,6 +253,31 @@ describe('SignUpController', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new MissingParamError('name'));
+  });
+
+  test('Should return 403 if user already exists', async () => {
+    const { sut, fakeFindUserByEmailRepository } = makeSut();
+    jest.spyOn(fakeFindUserByEmailRepository, 'find').mockImplementationOnce(async () => ({
+      id: 'valid_id',
+      name: 'valid_name',
+      password: 'valid_password',
+      email: 'valid_email',
+
+    }));
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(403);
+    expect(response.data).toEqual(new UserAlreadyExistsError());
   });
 
   test('Should return 200 if valid params are provided', async () => {
