@@ -8,7 +8,7 @@ describe('MongoUsersRepository', () => {
   beforeAll(async () => { await mongoHelper.connect(process.env.MONGO_URL); });
   afterAll(async () => { await mongoHelper.disconnect(); });
 
-  test('Should create an account on success', async () => {
+  test('Should create an user on success', async () => {
     const sut = new MongoUsersRepository(mongoHelper);
     const user = {
       name: 'any_name',
