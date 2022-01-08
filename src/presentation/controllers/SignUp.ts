@@ -1,8 +1,14 @@
-import { badRequest, ok, serverError } from '@/presentation/helpers';
+import {
+  ok,
+  badRequest,
+  serverError,
+  forbidden,
+} from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
 import { Controller, EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
+import { UserAlreadyExistsError } from '../errors/UserAlreadyExistsError';
 
 export class SignUpController implements Controller {
   constructor(private readonly emailValidator: EmailValidator,
@@ -32,6 +38,7 @@ export class SignUpController implements Controller {
       return ok(user);
     } catch (error) {
       console.error(error);
+      if (error instanceof UserAlreadyExistsError) return forbidden(error);
       return serverError();
     }
   }
