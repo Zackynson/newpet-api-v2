@@ -2,6 +2,7 @@
 import { CreateUserParams, CreateUserRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
 import { MongoHelper } from '@/infra/db/mongodb/helpers/MongoHelper';
+import { format } from '@/infra/db/mongodb/Users/UserFormatter';
 
 export class MongoUsersRepository implements CreateUserRepository {
   constructor(private readonly mongoHelper: MongoHelper) {}
@@ -12,6 +13,6 @@ export class MongoUsersRepository implements CreateUserRepository {
 
     const foundInsertedUser = await usersCollection.findOne({ _id: result.insertedId });
 
-    return { ...foundInsertedUser, id: foundInsertedUser._id.toString() } as unknown as User;
+    return format(foundInsertedUser);
   }
 }
