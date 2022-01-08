@@ -8,6 +8,11 @@ describe('MongoUsersRepository', () => {
   beforeAll(async () => { await mongoHelper.connect(process.env.MONGO_URL); });
   afterAll(async () => { await mongoHelper.disconnect(); });
 
+  beforeEach(async () => {
+    const collection = await mongoHelper.getCollection('users');
+    await collection.deleteMany({});
+  });
+
   test('Should create an user on success', async () => {
     const sut = new MongoUsersRepository(mongoHelper);
     const user = {
