@@ -3,7 +3,7 @@ import { EmailValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError, ServerError } from '@/presentation/errors';
 import { SignUpController } from '@/presentation/controllers/SignUp';
 import { CreateUserUseCase } from '@/data/useCases/User';
-import { CreateUserParams, UpdateUserParams, UsersRepository } from '@/data/protocols';
+import { CreateUserParams, CreateUserRepository, FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
 
@@ -14,32 +14,17 @@ class EmailValidatorStub implements EmailValidator {
   }
 }
 
-class FakeUsersRepository implements UsersRepository {
+class FakeCreateUserRepository implements CreateUserRepository {
   async insert(user: CreateUserParams): Promise<User> {
     return {
       ...user,
       id: 'valid_id',
+      password: 'hashed_password',
     };
   }
-
-  async list(): Promise<User[]> {
-    return [];
-  }
-
-  async findById(_id: string): Promise<User> {
-    return null;
-  }
-
-  async findByEmail(_email: string): Promise<User> {
-    return null;
-  }
-
-  async delete(_id: string): Promise<void> {
-    return null;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async update({ id, data }: { id: string; data: UpdateUserParams; }): Promise<void> {
+}
+class FakeFindUserByEmailRepository implements FindUserByEmailRepository {
+  async find(_email: string): Promise<User> {
     return null;
   }
 }
@@ -49,15 +34,19 @@ class FakeEncriptionHelper implements Encrypter {
     return true;
   }
 
-  async encrypt(text: string): Promise<string> {
-    return text;
+  async encrypt(_text: string): Promise<string> {
+    return 'hashed_password';
   }
 }
 
 const makeCreateUserUseCase = (): CreateUserUseCase => {
-  const fakeUsersRepository = new FakeUsersRepository();
+  const fakeCreateUserRepository = new FakeCreateUserRepository();
+  const fakeFindUserByEmailRepository = new FakeFindUserByEmailRepository();
   const fakeEncriptionHelper = new FakeEncriptionHelper();
-  const createUserUseCase = new CreateUserUseCase(fakeUsersRepository, fakeEncriptionHelper);
+  const createUserUseCase = new CreateUserUseCase(
+    fakeCreateUserRepository,
+    fakeFindUserByEmailRepository,
+    fakeEncriptionHelper);
 
   return createUserUseCase;
 };
@@ -258,7 +247,7 @@ describe('SignUpController', () => {
       id: 'valid_id',
       name: 'any_name',
       email: 'any_email',
-      password: 'any_password',
+      password: 'hashed_password',
       avatarUrl: 'any_url',
       pets: [],
     });
