@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 import bcrypt from 'bcrypt';
 import { BcryptAdapter } from '@/infra/cryptography/BcryptAdapter';
 
@@ -14,7 +15,7 @@ describe('BcryptAdapter', () => {
   });
 
   test('Should return a hash on success', async () => {
-    jest.spyOn(bcrypt, 'hash').mockImplementation(() => 'hashed_value');
+    jest.spyOn(bcrypt, 'hash').mockImplementation(() => new Promise(((resolve) => resolve('hashed_value'))));
     const sut = makeSut();
     const hash = await sut.encrypt('any_value');
 
@@ -22,7 +23,8 @@ describe('BcryptAdapter', () => {
   });
 
   test('Should throw if bcrypt throws', async () => {
-    jest.spyOn(bcrypt, 'hash').mockImplementation(() => { throw new Error(); });
+    jest.spyOn(bcrypt, 'hash').mockImplementation(() => new Promise(((_resolve, reject) => reject(new Error()))));
+
     const sut = makeSut();
     const promise = sut.encrypt('any_value');
 
