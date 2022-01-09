@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "sucrase-node src/main/server.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register src/main/server.ts",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:verbose": "jest --passWithNoTests --runInBand",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
@@ -42,9 +42,10 @@
     "jest": "^27.2.0",
     "lint-staged": "^12.1.5",
     "prettier": "^2.5.1",
-    "sucrase": "^3.20.3",
     "supertest": "^6.1.6",
     "ts-jest": "^27.0.5",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.12.0",
     "typescript": "^4.4.3"
   }
 }
