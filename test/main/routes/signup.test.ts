@@ -2,19 +2,24 @@ import request from 'supertest';
 import app from '@/main/config/app';
 import { MongoHelper } from '@/infra/db/mongodb/helpers/MongoHelper';
 
-const mongoHelper = new MongoHelper();
-
 describe('SignUp Route', () => {
-  beforeAll(async () => { await mongoHelper.connect(process.env.MONGO_URL); });
-  afterAll(async () => { await mongoHelper.disconnect(); });
+  beforeAll(async () => { await MongoHelper.connect(process.env.MONGO_URL); });
+  afterAll(async () => { await MongoHelper.disconnect(); });
 
   beforeEach(async () => {
-    const collection = await mongoHelper.getCollection('users');
+    const collection = await MongoHelper.getCollection('users');
     await collection.deleteMany({});
   });
 
   test('Should return 200', async () => {
-    await request(app).post('/signup').send()
+    await request(app).post('/signup').send({
+      name: 'test',
+      email: 'test@email.com',
+      password: '12345678',
+      confirmPassword: '12345678',
+      avatarUrl: 'test.png',
+
+    })
       .expect(200);
   });
 });

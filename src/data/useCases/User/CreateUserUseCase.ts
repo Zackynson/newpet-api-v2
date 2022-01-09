@@ -12,9 +12,9 @@ export class CreateUserUseCase implements ICreateUserUseCase {
   ) {}
 
   async execute(user: CreateUserUseCaseParams):Promise<User> {
-    const userExists = await this.findUserByEmailRepository.find(user.email);
+    const userExists = await this.findUserByEmailRepository.findByEmail(user.email);
 
-    if (userExists) throw new UserAlreadyExistsError();
+    if (userExists?.id) throw new UserAlreadyExistsError();
 
     const encryptedPassword = await this.encriptionHelper.encrypt(user.password);
     const newUser = { ...user, password: encryptedPassword, pets: [] };

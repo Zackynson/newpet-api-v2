@@ -28,7 +28,7 @@ class FakeCreateUserRepository implements CreateUserRepository {
   }
 }
 class FakeFindUserByEmailRepository implements FindUserByEmailRepository {
-  async find(_email: string): Promise<User> {
+  async findByEmail(_email: string): Promise<User> {
     return null;
   }
 }
@@ -257,7 +257,7 @@ describe('SignUpController', () => {
 
   test('Should return 403 if user already exists', async () => {
     const { sut, fakeFindUserByEmailRepository } = makeSut();
-    jest.spyOn(fakeFindUserByEmailRepository, 'find').mockImplementationOnce(async () => ({
+    jest.spyOn(fakeFindUserByEmailRepository, 'findByEmail').mockImplementationOnce(async () => ({
       id: 'valid_id',
       name: 'valid_name',
       password: 'valid_password',

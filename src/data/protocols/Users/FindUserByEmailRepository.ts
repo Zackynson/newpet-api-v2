@@ -1,5 +1,5 @@
 import { User } from '@/domain/entities';
 
 export interface FindUserByEmailRepository{
- find(email: string): Promise<User>
+ findByEmail(email: string): Promise<User>
 }

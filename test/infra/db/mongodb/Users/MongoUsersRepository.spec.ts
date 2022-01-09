@@ -2,19 +2,17 @@ import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersReposit
 
 import { MongoHelper } from '@/infra/db/mongodb/helpers/MongoHelper';
 
-const mongoHelper = new MongoHelper();
-
 describe('MongoUsersRepository', () => {
-  beforeAll(async () => { await mongoHelper.connect(process.env.MONGO_URL); });
-  afterAll(async () => { await mongoHelper.disconnect(); });
+  beforeAll(async () => { await MongoHelper.connect(process.env.MONGO_URL); });
+  afterAll(async () => { await MongoHelper.disconnect(); });
 
   beforeEach(async () => {
-    const collection = await mongoHelper.getCollection('users');
+    const collection = await MongoHelper.getCollection('users');
     await collection.deleteMany({});
   });
 
   test('Should create an user on success', async () => {
-    const sut = new MongoUsersRepository(mongoHelper);
+    const sut = new MongoUsersRepository();
     const user = {
       name: 'any_name',
       email: 'any_email@email.com',
