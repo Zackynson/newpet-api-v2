@@ -1,3 +1,3 @@
-import express from 'express';
+import app from '@/main/config/app';
 
-express().listen(3333, () => console.log('running...'));
+app.listen(3333, () => console.log('server running at: http://localhost:3333'));
