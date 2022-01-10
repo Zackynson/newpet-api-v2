@@ -5,13 +5,14 @@ import {
   forbidden,
 } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
-import { Controller, EmailValidator } from '@/presentation/protocols';
+import { Controller, EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import { InvalidParamError, MissingParamError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
 import { UserAlreadyExistsError } from '../errors/UserAlreadyExistsError';
 
 export class SignUpController implements Controller {
   constructor(private readonly emailValidator: EmailValidator,
+    private readonly passwordValidator: PasswordValidator,
     private readonly createUserUseCase: ICreateUserUseCase) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -28,8 +29,10 @@ export class SignUpController implements Controller {
       if (confirmPassword !== password) return badRequest(new InvalidParamError('confirmPassword'));
 
       const emailIsValid = this.emailValidator.validate(email);
-
       if (!emailIsValid) return badRequest(new InvalidParamError('email'));
+
+      const passwordIsValid = this.passwordValidator.validate(password);
+      if (!passwordIsValid) return badRequest(new InvalidParamError('password'));
 
       const user = await this.createUserUseCase.execute({
         name, email, password, avatarUrl,
