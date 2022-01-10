@@ -15,8 +15,8 @@ describe('SignUp Route', () => {
     await request(app).post('/signup').send({
       name: 'test',
       email: 'test@email.com',
-      password: '12345678',
-      confirmPassword: '12345678',
+      password: 'testeNewPet$123',
+      confirmPassword: 'testeNewPet$123',
       avatarUrl: 'test.png',
 
     })

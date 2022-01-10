@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { EmailValidator } from '@/presentation/protocols';
+import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import {
   InvalidParamError,
   MissingParamError,
@@ -14,6 +14,11 @@ import { Encrypter } from '@/data/protocols/Encrypter';
 
 class EmailValidatorStub implements EmailValidator {
   validate(_email: string): boolean {
+    return true;
+  }
+}
+class PasswordValidatorStub implements PasswordValidator {
+  validate(_password: string): boolean {
     return true;
   }
 }
@@ -69,16 +74,18 @@ const makeCreateUserUseCase = (): MakeCreateUserUseCaseTypes => {
 
 const makeSut = () => {
   const emailValidator = new EmailValidatorStub();
+  const passwordValidator = new PasswordValidatorStub();
   const {
     createUserUseCase,
     fakeCreateUserRepository,
     fakeEncriptionHelper,
     fakeFindUserByEmailRepository,
   } = makeCreateUserUseCase();
-  const sut = new SignUpController(emailValidator, createUserUseCase);
+  const sut = new SignUpController(emailValidator, passwordValidator, createUserUseCase);
   return {
     sut,
     emailValidator,
+    passwordValidator,
     createUserUseCase,
     fakeCreateUserRepository,
     fakeEncriptionHelper,
@@ -141,6 +148,26 @@ describe('SignUpController', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new InvalidParamError('email'));
+  });
+
+  test('Should returns 400 if an invalid password is provided', async () => {
+    const { sut, passwordValidator } = makeSut();
+    jest.spyOn(passwordValidator, 'validate').mockReturnValueOnce(false);
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'invalid_password',
+        confirmPassword: 'invalid_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new InvalidParamError('password'));
   });
 
   test('Should returns 400 if password is not provided', async () => {
