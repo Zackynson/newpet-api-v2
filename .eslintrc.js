@@ -26,6 +26,7 @@ module.exports = {
     'function-paren-newline': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'no-console': 'off',
+    'lines-between-class-members': 'off',
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {

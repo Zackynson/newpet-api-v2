@@ -38,7 +38,7 @@ class FakeFindUserByEmailRepository implements FindUserByEmailRepository {
   }
 }
 
-class FakeEncriptionHelper implements Encrypter {
+class FakeEncryptionHelper implements Encrypter {
   async compare(_text: string, _hash: string): Promise<boolean> {
     return true;
   }
@@ -52,23 +52,25 @@ type MakeCreateUserUseCaseTypes ={
   createUserUseCase: CreateUserUseCase,
   fakeCreateUserRepository: FakeCreateUserRepository,
   fakeFindUserByEmailRepository: FakeFindUserByEmailRepository,
-  fakeEncriptionHelper: FakeEncriptionHelper
+  fakeEncryptionHelper: FakeEncryptionHelper
 }
 
 const makeCreateUserUseCase = (): MakeCreateUserUseCaseTypes => {
   const fakeCreateUserRepository = new FakeCreateUserRepository();
   const fakeFindUserByEmailRepository = new FakeFindUserByEmailRepository();
-  const fakeEncriptionHelper = new FakeEncriptionHelper();
+  const fakeEncryptionHelper = new FakeEncryptionHelper();
   const createUserUseCase = new CreateUserUseCase(
-    fakeCreateUserRepository,
-    fakeFindUserByEmailRepository,
-    fakeEncriptionHelper);
+    {
+      createUserRepository: fakeCreateUserRepository,
+      findUserByEmailRepository: fakeFindUserByEmailRepository,
+      encryptionHelper: fakeEncryptionHelper,
+    });
 
   return {
     createUserUseCase,
     fakeCreateUserRepository,
     fakeFindUserByEmailRepository,
-    fakeEncriptionHelper,
+    fakeEncryptionHelper,
   };
 };
 
@@ -78,7 +80,7 @@ const makeSut = () => {
   const {
     createUserUseCase,
     fakeCreateUserRepository,
-    fakeEncriptionHelper,
+    fakeEncryptionHelper,
     fakeFindUserByEmailRepository,
   } = makeCreateUserUseCase();
   const sut = new SignUpController({ emailValidator, passwordValidator, createUserUseCase });
@@ -88,7 +90,7 @@ const makeSut = () => {
     passwordValidator,
     createUserUseCase,
     fakeCreateUserRepository,
-    fakeEncriptionHelper,
+    fakeEncryptionHelper,
     fakeFindUserByEmailRepository,
   };
 };
