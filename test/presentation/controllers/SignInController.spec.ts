@@ -23,7 +23,7 @@ type SutTypes = {
 const makeSut = (): SutTypes => {
   const emailValidator = new FakeEmailValidator();
   const passwordValidator = new FakePasswordValidator();
-  const sut = new SignInController(emailValidator, passwordValidator);
+  const sut = new SignInController({ emailValidator, passwordValidator });
 
   return {
     sut,

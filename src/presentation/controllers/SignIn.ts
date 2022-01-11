@@ -8,9 +8,17 @@ import {
 import { badRequest, ok, serverError } from '@/presentation/helpers';
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 
+type SignUpControllerConstructor = {
+    emailValidator: EmailValidator;
+    passwordValidator: PasswordValidator;
+}
 export class SignInController implements Controller {
-  constructor(private readonly emailValidator: EmailValidator,
-    private readonly passwordValidator: PasswordValidator) {}
+  private readonly emailValidator: EmailValidator;
+  private readonly passwordValidator: PasswordValidator;
+
+  constructor(params: SignUpControllerConstructor) {
+    Object.assign(this, params);
+  }
 
   async handle(httpRequest:HttpRequest):Promise<HttpResponse> {
     try {
