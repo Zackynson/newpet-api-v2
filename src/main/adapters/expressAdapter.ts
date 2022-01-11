@@ -8,5 +8,5 @@ export const adapt = (controller: Controller) => async (req:Request, res:Respons
 
   const httpResponse = await controller.handle(httpRequest);
 
-  return res.status(httpResponse.statusCode).json(httpResponse?.data);
+  return res.status(httpResponse.statusCode).json(httpResponse.data);
 };

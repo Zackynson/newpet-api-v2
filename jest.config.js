@@ -12,4 +12,5 @@ module.exports = {
     '@test/(.*)': '<rootDir>/test/$1',
   },
   preset: '@shelf/jest-mongodb',
+  coveragePathIgnorePatterns: ['<rootDir>/src/main/config/env.ts'],
 };
