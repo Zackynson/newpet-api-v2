@@ -11,19 +11,18 @@ import { InvalidParamError, MissingParamError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
 import { UserAlreadyExistsError } from '../errors/UserAlreadyExistsError';
 
+type SignUpControllerConstructor = {
+  emailValidator: EmailValidator;
+  passwordValidator: PasswordValidator;
+  createUserUseCase: ICreateUserUseCase;
+}
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator;
   private readonly passwordValidator: PasswordValidator;
-  readonly createUserUseCase: ICreateUserUseCase;
+  private readonly createUserUseCase: ICreateUserUseCase;
 
-  constructor({
-    emailValidator,
-    passwordValidator,
-    createUserUseCase,
-  }) {
-    this.emailValidator = emailValidator;
-    this.passwordValidator = passwordValidator;
-    this.createUserUseCase = createUserUseCase;
+  constructor(params: SignUpControllerConstructor) {
+    Object.assign(this, params);
   }
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
