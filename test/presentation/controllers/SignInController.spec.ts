@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { MissingParamError, InvalidParamError } from '@/presentation/errors';
+import { MissingParamError, InvalidParamError, ServerError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 
@@ -97,5 +97,28 @@ describe('SignInController', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new InvalidParamError('password'));
+  });
+
+  test('Should returns 500 if emailValidator throws', async () => {
+    const { sut, emailValidator } = makeSut();
+
+    jest.spyOn(emailValidator, 'validate').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.data).toEqual(new ServerError());
   });
 });
