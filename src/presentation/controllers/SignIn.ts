@@ -5,7 +5,7 @@ import {
   EmailValidator,
   PasswordValidator,
 } from '@/presentation/protocols';
-import { badRequest, ok } from '@/presentation/helpers';
+import { badRequest, ok, serverError } from '@/presentation/helpers';
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 
 export class SignInController implements Controller {
@@ -13,17 +13,22 @@ export class SignInController implements Controller {
     private readonly passwordValidator: PasswordValidator) {}
 
   async handle(httpRequest:HttpRequest):Promise<HttpResponse> {
-    const { email, password } = httpRequest.body;
+    try {
+      const { email, password } = httpRequest.body;
 
-    if (!email) return badRequest(new MissingParamError('email'));
-    if (!password) return badRequest(new MissingParamError('password'));
+      if (!email) return badRequest(new MissingParamError('email'));
+      if (!password) return badRequest(new MissingParamError('password'));
 
-    const isEmailValid = this.emailValidator.validate(email);
-    if (!isEmailValid) return badRequest(new InvalidParamError('email'));
+      const isEmailValid = this.emailValidator.validate(email);
+      if (!isEmailValid) return badRequest(new InvalidParamError('email'));
 
-    const isPasswordValid = this.passwordValidator.validate(password);
-    if (!isPasswordValid) return badRequest(new InvalidParamError('password'));
+      const isPasswordValid = this.passwordValidator.validate(password);
+      if (!isPasswordValid) return badRequest(new InvalidParamError('password'));
 
-    return ok();
+      return ok();
+    } catch (error) {
+      console.error(error);
+      return serverError();
+    }
   }
 }
