@@ -1,3 +1,4 @@
+/* eslint-disable lines-between-class-members */
 import {
   ok,
   badRequest,
@@ -11,9 +12,19 @@ import { ICreateUserUseCase } from '@/domain/useCases/User';
 import { UserAlreadyExistsError } from '../errors/UserAlreadyExistsError';
 
 export class SignUpController implements Controller {
-  constructor(private readonly emailValidator: EmailValidator,
-    private readonly passwordValidator: PasswordValidator,
-    private readonly createUserUseCase: ICreateUserUseCase) {}
+  private readonly emailValidator: EmailValidator;
+  private readonly passwordValidator: PasswordValidator;
+  readonly createUserUseCase: ICreateUserUseCase;
+
+  constructor({
+    emailValidator,
+    passwordValidator,
+    createUserUseCase,
+  }) {
+    this.emailValidator = emailValidator;
+    this.passwordValidator = passwordValidator;
+    this.createUserUseCase = createUserUseCase;
+  }
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {

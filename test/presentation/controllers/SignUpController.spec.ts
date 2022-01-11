@@ -81,7 +81,7 @@ const makeSut = () => {
     fakeEncriptionHelper,
     fakeFindUserByEmailRepository,
   } = makeCreateUserUseCase();
-  const sut = new SignUpController(emailValidator, passwordValidator, createUserUseCase);
+  const sut = new SignUpController({ emailValidator, passwordValidator, createUserUseCase });
   return {
     sut,
     emailValidator,

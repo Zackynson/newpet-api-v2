@@ -12,5 +12,5 @@ export const makeSignUpController = (): SignUpController => {
   const encryptionHelper = new BcryptAdapter(env.bcryptSaltNumber);
   const mongoUsersRepository = new MongoUsersRepository();
   const createUserUseCase = new CreateUserUseCase(mongoUsersRepository, mongoUsersRepository, encryptionHelper);
-  return new SignUpController(emailValidator, passwordValidator, createUserUseCase);
+  return new SignUpController({ emailValidator, passwordValidator, createUserUseCase });
 };
