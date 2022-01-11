@@ -121,4 +121,27 @@ describe('SignInController', () => {
     expect(response.statusCode).toBe(500);
     expect(response.data).toEqual(new ServerError());
   });
+
+  test('Should returns 500 if passwordValidator throws', async () => {
+    const { sut, passwordValidator } = makeSut();
+
+    jest.spyOn(passwordValidator, 'validate').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(500);
+    expect(response.data).toEqual(new ServerError());
+  });
 });
