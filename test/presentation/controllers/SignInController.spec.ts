@@ -1,24 +1,34 @@
+/* eslint-disable max-classes-per-file */
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
-import { EmailValidator } from '@/presentation/protocols';
+import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 
 class FakeEmailValidator implements EmailValidator {
-  validate(email: string): boolean {
+  validate(_email: string): boolean {
+    return true;
+  }
+}
+class FakePasswordValidator implements PasswordValidator {
+  validate(_password: string): boolean {
     return true;
   }
 }
 
 type SutTypes = {
   sut: SignInController,
-  emailValidator: EmailValidator
+  emailValidator: EmailValidator,
+  passwordValidator: PasswordValidator,
 }
 
 const makeSut = (): SutTypes => {
   const emailValidator = new FakeEmailValidator();
-  const sut = new SignInController(emailValidator);
+  const passwordValidator = new FakePasswordValidator();
+  const sut = new SignInController(emailValidator, passwordValidator);
 
   return {
-    sut, emailValidator,
+    sut,
+    emailValidator,
+    passwordValidator,
   };
 };
 
@@ -69,5 +79,23 @@ describe('SignInController', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new InvalidParamError('email'));
+  });
+
+  test('Should returns 400 if an invalid password is provided', async () => {
+    const { sut, passwordValidator } = makeSut();
+
+    jest.spyOn(passwordValidator, 'validate').mockImplementation(() => false);
+
+    const request = {
+      body: {
+        email: 'invalid_mail',
+        password: 'any_password',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response.statusCode).toBe(400);
+    expect(response.data).toEqual(new InvalidParamError('password'));
   });
 });
