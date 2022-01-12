@@ -2,6 +2,9 @@
 import { MissingParamError, InvalidParamError, ServerError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
+import { IFindUserByEmailUseCase } from '@/domain/useCases/User';
+import { User } from '@/domain/entities';
+import { notFound } from '@/presentation/helpers';
 
 class FakeEmailValidator implements EmailValidator {
   validate(_email: string): boolean {
@@ -14,21 +17,37 @@ class FakePasswordValidator implements PasswordValidator {
   }
 }
 
+class FakeFindUserByEmailUseCase implements IFindUserByEmailUseCase {
+  async execute(email: string): Promise<User> {
+    return {
+      email,
+      id: 'valid_id',
+      name: 'valid_name',
+      password: 'valid_password',
+      avatarUrl: 'valid_url',
+      pets: [],
+    };
+  }
+}
+
 type SutTypes = {
   sut: SignInController,
   emailValidator: EmailValidator,
   passwordValidator: PasswordValidator,
+  findUserByEmailUseCase: IFindUserByEmailUseCase,
 }
 
 const makeSut = (): SutTypes => {
   const emailValidator = new FakeEmailValidator();
   const passwordValidator = new FakePasswordValidator();
-  const sut = new SignInController({ emailValidator, passwordValidator });
+  const findUserByEmailUseCase = new FakeFindUserByEmailUseCase();
+  const sut = new SignInController({ emailValidator, passwordValidator, findUserByEmailUseCase });
 
   return {
     sut,
     emailValidator,
     passwordValidator,
+    findUserByEmailUseCase,
   };
 };
 
@@ -143,5 +162,25 @@ describe('SignInController', () => {
 
     expect(response.statusCode).toBe(500);
     expect(response.data).toEqual(new ServerError());
+  });
+
+  test('Should returns 404 if user is not found', async () => {
+    const { sut, findUserByEmailUseCase } = makeSut();
+
+    jest.spyOn(findUserByEmailUseCase, 'execute').mockImplementation(() => null);
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response).toEqual(notFound(new Error('User not found')));
   });
 });
