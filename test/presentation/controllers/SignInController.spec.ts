@@ -2,7 +2,9 @@
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
-import { serverError, badRequest, unauthorized } from '@/presentation/helpers';
+import {
+  serverError, badRequest, unauthorized, ok,
+} from '@/presentation/helpers';
 import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
 
 class FakeEmailValidator implements EmailValidator {
@@ -18,7 +20,7 @@ class FakePasswordValidator implements PasswordValidator {
 
 class FakeAuthenticationUseCase implements IAuthenticationUseCase {
   async auth(_email: string, _password: string): Promise<string> {
-    return 'valid_token';
+    return 'any_token';
   }
 }
 
@@ -180,5 +182,13 @@ describe('SignInController', () => {
     const response = await sut.handle(makeFakeRequest());
 
     expect(response).toEqual(serverError());
+  });
+
+  test('Should return 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut();
+
+    const respose = await sut.handle(makeFakeRequest());
+
+    expect(respose).toEqual(ok({ access_token: 'any_token' }));
   });
 });
