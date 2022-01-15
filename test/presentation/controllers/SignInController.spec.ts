@@ -5,6 +5,7 @@ import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import { IFindUserByEmailUseCase } from '@/domain/useCases/User';
 import { User } from '@/domain/entities';
 import { notFound, serverError, badRequest } from '@/presentation/helpers';
+import { Decrypter } from '@/data/protocols';
 
 class FakeEmailValidator implements EmailValidator {
   validate(_email: string): boolean {
@@ -30,24 +31,38 @@ class FakeFindUserByEmailUseCase implements IFindUserByEmailUseCase {
   }
 }
 
+class FakeDecrypter implements Decrypter {
+  async compare(_hash: string, _plainText: string): Promise<boolean> {
+    return true;
+  }
+}
+
 type SutTypes = {
   sut: SignInController,
   emailValidator: EmailValidator,
   passwordValidator: PasswordValidator,
   findUserByEmailUseCase: IFindUserByEmailUseCase,
+  decrypter: FakeDecrypter
 }
 
 const makeSut = (): SutTypes => {
   const emailValidator = new FakeEmailValidator();
   const passwordValidator = new FakePasswordValidator();
   const findUserByEmailUseCase = new FakeFindUserByEmailUseCase();
-  const sut = new SignInController({ emailValidator, passwordValidator, findUserByEmailUseCase });
+  const decrypter = new FakeDecrypter();
+  const sut = new SignInController({
+    emailValidator,
+    passwordValidator,
+    findUserByEmailUseCase,
+    decrypter,
+  });
 
   return {
     sut,
     emailValidator,
     passwordValidator,
     findUserByEmailUseCase,
+    decrypter,
   };
 };
 
@@ -162,6 +177,26 @@ describe('SignInController', () => {
     const { sut, findUserByEmailUseCase } = makeSut();
 
     jest.spyOn(findUserByEmailUseCase, 'execute').mockImplementation(() => null);
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response).toEqual(notFound(new Error('User not found')));
+  });
+
+  test('Should returns 404 if password does not match', async () => {
+    const { sut, decrypter } = makeSut();
+
+    jest.spyOn(decrypter, 'compare').mockImplementation(async () => false);
 
     const request = {
       body: {
