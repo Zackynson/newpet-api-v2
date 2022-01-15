@@ -5,7 +5,7 @@ import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import { IFindUserByEmailUseCase } from '@/domain/useCases/User';
 import { User } from '@/domain/entities';
 import { notFound, serverError, badRequest } from '@/presentation/helpers';
-import { Decrypter } from '@/data/protocols';
+import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
 
 class FakeEmailValidator implements EmailValidator {
   validate(_email: string): boolean {
@@ -31,9 +31,9 @@ class FakeFindUserByEmailUseCase implements IFindUserByEmailUseCase {
   }
 }
 
-class FakeDecrypter implements Decrypter {
-  async compare(_hash: string, _plainText: string): Promise<boolean> {
-    return true;
+class FakeAuthenticationUseCase implements IAuthenticationUseCase {
+  async auth(_email: string, _password: string): Promise<string> {
+    return 'valid_token';
   }
 }
 
@@ -42,19 +42,19 @@ type SutTypes = {
   emailValidator: EmailValidator,
   passwordValidator: PasswordValidator,
   findUserByEmailUseCase: IFindUserByEmailUseCase,
-  decrypter: FakeDecrypter
+  authenticationUseCase: IAuthenticationUseCase
 }
 
 const makeSut = (): SutTypes => {
   const emailValidator = new FakeEmailValidator();
   const passwordValidator = new FakePasswordValidator();
   const findUserByEmailUseCase = new FakeFindUserByEmailUseCase();
-  const decrypter = new FakeDecrypter();
+  const authenticationUseCase = new FakeAuthenticationUseCase();
   const sut = new SignInController({
     emailValidator,
     passwordValidator,
     findUserByEmailUseCase,
-    decrypter,
+    authenticationUseCase,
   });
 
   return {
@@ -62,7 +62,7 @@ const makeSut = (): SutTypes => {
     emailValidator,
     passwordValidator,
     findUserByEmailUseCase,
-    decrypter,
+    authenticationUseCase,
   };
 };
 
@@ -193,10 +193,10 @@ describe('SignInController', () => {
     expect(response).toEqual(notFound(new Error('User not found')));
   });
 
-  test('Should returns 404 if password does not match', async () => {
-    const { sut, decrypter } = makeSut();
+  test('Should call autenticationUseCase with correct values', async () => {
+    const { sut, authenticationUseCase } = makeSut();
 
-    jest.spyOn(decrypter, 'compare').mockImplementation(async () => false);
+    const authSpy = jest.spyOn(authenticationUseCase, 'auth');
 
     const request = {
       body: {
@@ -208,8 +208,8 @@ describe('SignInController', () => {
       },
     };
 
-    const response = await sut.handle(request);
+    await sut.handle(request);
 
-    expect(response).toEqual(notFound(new Error('User not found')));
+    expect(authSpy).toBeCalledWith(request.body.email, request.body.password);
   });
 });
