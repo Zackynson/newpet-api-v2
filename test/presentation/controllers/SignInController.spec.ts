@@ -22,6 +22,13 @@ class FakeAuthenticationUseCase implements IAuthenticationUseCase {
   }
 }
 
+const makeFakeRequest = () => ({
+  body: {
+    email: 'any_email',
+    password: 'any_password',
+  },
+});
+
 type SutTypes = {
   sut: SignInController,
   emailValidator: EmailValidator,
@@ -117,17 +124,7 @@ describe('SignInController', () => {
       throw new Error();
     });
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
+    const response = await sut.handle(makeFakeRequest());
 
     expect(response).toEqual(serverError());
   });
@@ -139,17 +136,7 @@ describe('SignInController', () => {
       throw new Error();
     });
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
+    const response = await sut.handle(makeFakeRequest());
 
     expect(response).toEqual(serverError());
   });
@@ -159,33 +146,22 @@ describe('SignInController', () => {
 
     const authSpy = jest.spyOn(authenticationUseCase, 'auth');
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
+    const request = makeFakeRequest();
 
     await sut.handle(request);
 
     expect(authSpy).toBeCalledWith(request.body.email, request.body.password);
   });
 
-  test('Should return 401 if authentication fails', async () => {
+  test('Should return 401 if invalid credentials are provided', async () => {
     const { sut, authenticationUseCase } = makeSut();
 
     jest.spyOn(authenticationUseCase, 'auth').mockImplementation(async () => null);
 
     const request = {
       body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
+        email: 'invalid_email',
+        password: 'invalid_email',
       },
     };
 
@@ -201,17 +177,7 @@ describe('SignInController', () => {
       throw new Error();
     });
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
+    const response = await sut.handle(makeFakeRequest());
 
     expect(response).toEqual(serverError());
   });
