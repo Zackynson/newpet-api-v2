@@ -5,9 +5,14 @@ import {
   EmailValidator,
   PasswordValidator,
 } from '@/presentation/protocols';
+
 import {
-  badRequest, ok, serverError,
+  badRequest,
+  ok,
+  serverError,
+  unauthorized,
 } from '@/presentation/helpers';
+
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
 
@@ -38,7 +43,8 @@ export class SignInController implements Controller {
       const isPasswordValid = this.passwordValidator.validate(password);
       if (!isPasswordValid) return badRequest(new InvalidParamError('password'));
 
-      await this.authenticationUseCase.auth(email, password);
+      const accessToken = await this.authenticationUseCase.auth(email, password);
+      if (!accessToken) return unauthorized();
 
       return ok();
     } catch (error) {
