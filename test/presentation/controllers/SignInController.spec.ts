@@ -2,7 +2,7 @@
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
-import { serverError, badRequest } from '@/presentation/helpers';
+import { serverError, badRequest, unauthorized } from '@/presentation/helpers';
 import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
 
 class FakeEmailValidator implements EmailValidator {
@@ -172,5 +172,25 @@ describe('SignInController', () => {
     await sut.handle(request);
 
     expect(authSpy).toBeCalledWith(request.body.email, request.body.password);
+  });
+
+  test('Should return 401 if authentication fails', async () => {
+    const { sut, authenticationUseCase } = makeSut();
+
+    jest.spyOn(authenticationUseCase, 'auth').mockImplementation(async () => null);
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const respose = await sut.handle(request);
+
+    expect(respose).toEqual(unauthorized());
   });
 });
