@@ -193,4 +193,26 @@ describe('SignInController', () => {
 
     expect(respose).toEqual(unauthorized());
   });
+
+  test('Should returns 500 if authenticationUseCase throws', async () => {
+    const { sut, authenticationUseCase } = makeSut();
+
+    jest.spyOn(authenticationUseCase, 'auth').mockImplementationOnce(() => {
+      throw new Error();
+    });
+
+    const request = {
+      body: {
+        name: 'any_name',
+        email: 'any_email',
+        password: 'any_password',
+        confirmPassword: 'any_password',
+        avatarUrl: 'any_url',
+      },
+    };
+
+    const response = await sut.handle(request);
+
+    expect(response).toEqual(serverError());
+  });
 });
