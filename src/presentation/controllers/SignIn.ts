@@ -6,22 +6,19 @@ import {
   PasswordValidator,
 } from '@/presentation/protocols';
 import {
-  badRequest, ok, serverError, notFound,
+  badRequest, ok, serverError,
 } from '@/presentation/helpers';
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
-import { IFindUserByEmailUseCase } from '@/domain/useCases/User';
 import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
 
 type SignUpControllerConstructor = {
     emailValidator: EmailValidator;
     passwordValidator: PasswordValidator;
-    findUserByEmailUseCase: IFindUserByEmailUseCase;
     authenticationUseCase: IAuthenticationUseCase;
 }
 export class SignInController implements Controller {
   private readonly emailValidator: EmailValidator;
   private readonly passwordValidator: PasswordValidator;
-  private readonly findUserByEmailUseCase: IFindUserByEmailUseCase;
   private readonly authenticationUseCase: IAuthenticationUseCase;
 
   constructor(params: SignUpControllerConstructor) {
@@ -40,9 +37,6 @@ export class SignInController implements Controller {
 
       const isPasswordValid = this.passwordValidator.validate(password);
       if (!isPasswordValid) return badRequest(new InvalidParamError('password'));
-
-      const user = await this.findUserByEmailUseCase.execute(email);
-      if (!user) return notFound(new Error('User not found'));
 
       await this.authenticationUseCase.auth(email, password);
 
