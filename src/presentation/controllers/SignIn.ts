@@ -46,7 +46,9 @@ export class SignInController implements Controller {
       const accessToken = await this.authenticationUseCase.auth(email, password);
       if (!accessToken) return unauthorized();
 
-      return ok();
+      return ok({
+        access_token: accessToken,
+      });
     } catch (error) {
       console.error(error);
       return serverError();
