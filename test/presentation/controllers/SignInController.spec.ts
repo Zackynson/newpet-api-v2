@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import { MissingParamError, InvalidParamError, ServerError } from '@/presentation/errors';
+import { MissingParamError, InvalidParamError } from '@/presentation/errors';
 import { SignInController } from '@/presentation/controllers';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import { IFindUserByEmailUseCase } from '@/domain/useCases/User';
 import { User } from '@/domain/entities';
-import { notFound } from '@/presentation/helpers';
+import { notFound, serverError, badRequest } from '@/presentation/helpers';
 
 class FakeEmailValidator implements EmailValidator {
   validate(_email: string): boolean {
@@ -63,8 +63,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('email'));
+    expect(response).toEqual(badRequest(new MissingParamError('email')));
   });
 
   test('Should returns 400 if no password is provided', async () => {
@@ -78,8 +77,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('password'));
+    expect(response).toEqual(badRequest(new MissingParamError('password')));
   });
 
   test('Should returns 400 if an invalid email is provided', async () => {
@@ -96,8 +94,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new InvalidParamError('email'));
+    expect(response).toEqual(badRequest(new InvalidParamError('email')));
   });
 
   test('Should returns 400 if an invalid password is provided', async () => {
@@ -114,8 +111,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new InvalidParamError('password'));
+    expect(response).toEqual(badRequest(new InvalidParamError('password')));
   });
 
   test('Should returns 500 if emailValidator throws', async () => {
@@ -137,8 +133,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(500);
-    expect(response.data).toEqual(new ServerError());
+    expect(response).toEqual(serverError());
   });
 
   test('Should returns 500 if passwordValidator throws', async () => {
@@ -160,8 +155,7 @@ describe('SignInController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(500);
-    expect(response.data).toEqual(new ServerError());
+    expect(response).toEqual(serverError());
   });
 
   test('Should returns 404 if user is not found', async () => {
