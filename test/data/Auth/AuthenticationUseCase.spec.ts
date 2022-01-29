@@ -2,7 +2,7 @@
 import { Decrypter, TokenGenerator } from '@/data/protocols';
 import { FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
-import { AuthenticationUseCase } from './AutenticationUseCase';
+import { AuthenticationUseCase } from '@/data/useCases/Auth/AutenticationUseCase';
 
 class FakeTokenGenerator implements TokenGenerator {
   async generate(_user: User): Promise<string> {
