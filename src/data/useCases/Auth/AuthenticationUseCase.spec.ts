@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file */
-import e from 'express';
 import { Decrypter, TokenGenerator } from '@/data/protocols';
 import { FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
@@ -51,11 +50,38 @@ describe('AuthenticationUseCase', () => {
 
   test('Should return null if passwords doesnt match', async () => {
     const { sut, decrypter } = makeSut();
-    jest.spyOn(decrypter, 'compare').mockImplementationOnce(async (_email:string) => false);
+    jest.spyOn(decrypter, 'compare').mockImplementationOnce(async () => false);
 
     const token = await sut.auth('valid@email.com', 'invalid_password');
 
     expect(token).toBe(null);
+  });
+
+  test('Should throw if TokenGenerator throws', async () => {
+    const { sut, tokenGenerator } = makeSut();
+    jest.spyOn(tokenGenerator, 'generate').mockImplementationOnce(async (_user:User) => { throw new Error(); });
+
+    const promise = sut.auth('any@email.com', 'any_password');
+
+    expect(promise).rejects.toThrow();
+  });
+
+  test('Should throw if Decrypter throws', async () => {
+    const { sut, decrypter } = makeSut();
+    jest.spyOn(decrypter, 'compare').mockImplementationOnce(() => { throw new Error(); });
+
+    const promise = sut.auth('any@email.com', 'any_password');
+
+    expect(promise).rejects.toThrow();
+  });
+
+  test('Should throw if FindUserByEmailRepository throws', async () => {
+    const { sut, findUserByEmailRepository } = makeSut();
+    jest.spyOn(findUserByEmailRepository, 'findByEmail').mockImplementationOnce(() => { throw new Error(); });
+
+    const promise = sut.auth('any@email.com', 'any_password');
+
+    expect(promise).rejects.toThrow();
   });
 
   test('Should return a token if valid data is provided', async () => {
