@@ -6,13 +6,13 @@ import { User } from '@/domain/entities';
 import { AuthenticationUseCase } from './AutenticationUseCase';
 
 class FakeTokenGenerator implements TokenGenerator {
-  async generate(user: User): Promise<string> {
+  async generate(_user: User): Promise<string> {
     return 'valid_token';
   }
 }
 
 class FakeFindUserByEmailRepository implements FindUserByEmailRepository {
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(_email: string): Promise<User> {
     return {
       name: 'valid_name',
       email: 'valid@email.com',
@@ -23,7 +23,7 @@ class FakeFindUserByEmailRepository implements FindUserByEmailRepository {
 }
 
 class FakeDecryper implements Decrypter {
-  async compare(hash: string, plainText: string): Promise<boolean> {
+  async compare(_hash: string, _plainText: string): Promise<boolean> {
     return true;
   }
 }
@@ -56,5 +56,13 @@ describe('AuthenticationUseCase', () => {
     const token = await sut.auth('valid@email.com', 'invalid_password');
 
     expect(token).toBe(null);
+  });
+
+  test('Should return a token if valid data is provided', async () => {
+    const { sut } = makeSut();
+
+    const token = await sut.auth('valid@email.com', 'valid_password');
+
+    expect(token).toBeTruthy();
   });
 });
