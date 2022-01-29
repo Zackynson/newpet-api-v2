@@ -48,4 +48,13 @@ describe('AuthenticationUseCase', () => {
 
     expect(token).toBe(null);
   });
+
+  test('Should return null if passwords doesnt match', async () => {
+    const { sut, decrypter } = makeSut();
+    jest.spyOn(decrypter, 'compare').mockImplementationOnce(async (_email:string) => false);
+
+    const token = await sut.auth('valid@email.com', 'invalid_password');
+
+    expect(token).toBe(null);
+  });
 });
