@@ -1,12 +1,21 @@
-# newpet-api-v2
-Nova versão da api do newpet. 
-Criada usando TDD, conceitos de SOLID e Typescript. 
+# newpet-api-v2 🐕
+Nova versão da api do newpet. Criada usando TDD, conceitos de SOLID e Typescript. 
 
-## install
+## HOW TO INSTALL ⚙️
 * npm install
 
-## test
-* npm test
+## HOW TO TEST 🧪
+#### UNIT: 
+* npm run test:unit
 
-## run
-* ainda nao precisa :) 
+#### INTEGRATION:
+* npm run test:integration
+
+#### BOTH:
+npm run test
+
+#### GENERATE COVERAGE REPORT: ✔️
+npm run coverage
+
+## HOW TO RUN 🚀
+* npm run dev
