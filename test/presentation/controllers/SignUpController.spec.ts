@@ -6,7 +6,7 @@ import {
   ServerError,
   UserAlreadyExistsError,
 } from '@/presentation/errors';
-import { SignUpController } from '@/presentation/controllers/SignUp';
+import { SignUpController } from '@/presentation/controllers/auth';
 import { CreateUserUseCase } from '@/data/useCases/User';
 import { CreateUserParams, CreateUserRepository, FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';

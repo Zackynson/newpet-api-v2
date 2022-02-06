@@ -7,9 +7,8 @@ import {
 } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
 import { Controller, EmailValidator, PasswordValidator } from '@/presentation/protocols';
-import { InvalidParamError, MissingParamError } from '@/presentation/errors';
+import { InvalidParamError, MissingParamError, UserAlreadyExistsError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
-import { UserAlreadyExistsError } from '../errors/UserAlreadyExistsError';
 
 type SignUpControllerConstructor = {
   emailValidator: EmailValidator;

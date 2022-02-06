@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { CreateUserUseCase } from '@/data/useCases/User';
-import { SignUpController } from '@/presentation/controllers/SignUp';
+import { SignUpController } from '@/presentation/controllers/auth';
 import { EmailValidatorAdapter, PasswordValidatorAdapter } from '@/utils';
 import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersRepository';
 import { BcryptAdapter } from '@/infra/cryptography/BcryptAdapter';

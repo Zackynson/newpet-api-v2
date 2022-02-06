@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
-import { SignInController } from '@/presentation/controllers';
+import { SignInController } from '@/presentation/controllers/auth';
 import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import {
   serverError, badRequest, unauthorized, ok,
