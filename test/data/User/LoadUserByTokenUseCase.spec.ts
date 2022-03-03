@@ -37,4 +37,13 @@ describe('LoadUserByTokenUseCase', () => {
 
     expect(decryptSpy).toBeCalledWith('any_hash');
   });
+
+  test('Should return null if decrypter returns null', async () => {
+    const { sut, tokenDecrypter } = makeSut();
+    jest.spyOn(tokenDecrypter, 'decrypt').mockImplementationOnce(async () => null);
+
+    const response = await sut.load('any_hash');
+
+    expect(response).toEqual(null);
+  });
 });
