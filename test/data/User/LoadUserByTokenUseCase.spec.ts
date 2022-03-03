@@ -76,4 +76,13 @@ describe('LoadUserByTokenUseCase', () => {
 
     expect(loadByTokenSpy).toBeCalledWith('any_value');
   });
+
+  test('Should return null if LoadUserByTokenRepository returns null', async () => {
+    const { sut, loadUserByTokenRepository } = makeSut();
+    jest.spyOn(loadUserByTokenRepository, 'loadByToken').mockImplementationOnce(async () => null);
+
+    const response = await sut.load('any_hash');
+
+    expect(response).toBeNull();
+  });
 });
