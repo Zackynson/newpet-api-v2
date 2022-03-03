@@ -1,5 +1,5 @@
 import { AuthMiddleware } from '@/presentation/middlewares';
-import { forbidden } from '@/presentation/helpers';
+import { forbidden, ok } from '@/presentation/helpers';
 import { AccessDeniedError } from '@/presentation/errors';
 import { LoadUserByToken } from '@/domain/useCases/User/LoadUserByToken';
 import { User } from '@/domain/entities';
@@ -63,5 +63,15 @@ describe('Auth Middleware', () => {
 
     const response = await sut.handle(makeFakeRequest());
     expect(response).toEqual(forbidden(new AccessDeniedError()));
+  });
+
+  test('Should return 200 if LoadUserByToken returns an user', async () => {
+    const { sut } = makeSut();
+
+    const response = await sut.handle(makeFakeRequest());
+
+    expect(response).toEqual(ok({
+      userId: 'any_id',
+    }));
   });
 });
