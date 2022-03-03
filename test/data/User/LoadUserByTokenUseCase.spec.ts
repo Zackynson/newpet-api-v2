@@ -101,4 +101,12 @@ describe('LoadUserByTokenUseCase', () => {
     const promise = sut.load('any_hash');
     expect(promise).rejects.toThrow();
   });
+
+  test('Should throw if TokenDecrypter throws', async () => {
+    const { sut, tokenDecrypter } = makeSut();
+    jest.spyOn(tokenDecrypter, 'decrypt').mockImplementationOnce(async () => { throw new Error(); });
+
+    const promise = sut.load('any_hash');
+    expect(promise).rejects.toThrow();
+  });
 });
