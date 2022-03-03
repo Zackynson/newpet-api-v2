@@ -35,5 +35,6 @@ module.exports = {
         caughtErrorsIgnorePattern: '^_',
       },
     ],
+    '@typescript-eslint/no-namespace': 'off',
   },
 };
