@@ -93,4 +93,12 @@ describe('LoadUserByTokenUseCase', () => {
     const response = await sut.load('any_hash');
     expect(response).toEqual(makeFakeUser());
   });
+
+  test('Should throw if LoadUserByTokenRepository throws', async () => {
+    const { sut, loadUserByTokenRepository } = makeSut();
+    jest.spyOn(loadUserByTokenRepository, 'loadByToken').mockImplementationOnce(async () => { throw new Error(); });
+
+    const promise = sut.load('any_hash');
+    expect(promise).rejects.toThrow();
+  });
 });
