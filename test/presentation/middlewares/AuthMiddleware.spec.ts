@@ -4,16 +4,26 @@ import { AccessDeniedError } from '@/presentation/errors';
 import { LoadUserByToken } from '@/domain/useCases/User/LoadUserByToken';
 import { User } from '@/domain/entities';
 
-class LoadUserByTokenStub implements LoadUserByToken {
-  async load(_accessToken: string): Promise<User> {
-    return {
-      id: 'any_id',
-      email: 'any@email.com',
-      name: 'any_name',
-      password: 'any_hash',
-    };
+const makeLoadUserByTokenStub = (): LoadUserByToken => {
+  class LoadUserByTokenStub implements LoadUserByToken {
+    async load(_accessToken: string): Promise<User> {
+      return {
+        id: 'any_id',
+        email: 'any@email.com',
+        name: 'any_name',
+        password: 'any_hash',
+      };
+    }
   }
-}
+
+  return new LoadUserByTokenStub();
+};
+
+const makeFakeRequest = () => ({
+  headers: {
+    'x-access-token': 'any_token',
+  },
+});
 
 type SutTypes = {
   loadUserByTokenStub: LoadUserByToken,
@@ -21,7 +31,7 @@ type SutTypes = {
 }
 
 const makeSut = (): SutTypes => {
-  const loadUserByTokenStub = new LoadUserByTokenStub();
+  const loadUserByTokenStub = makeLoadUserByTokenStub();
   const sut = new AuthMiddleware({ loadUserByToken: loadUserByTokenStub });
 
   return {
@@ -42,11 +52,7 @@ describe('Auth Middleware', () => {
 
     const loadSpy = jest.spyOn(loadUserByTokenStub, 'load');
 
-    await sut.handle({
-      headers: {
-        'x-access-token': 'any_token',
-      },
-    });
+    await sut.handle(makeFakeRequest());
     expect(loadSpy).toBeCalledWith('any_token');
   });
 });
