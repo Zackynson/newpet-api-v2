@@ -44,6 +44,6 @@ describe('LoadUserByTokenUseCase', () => {
 
     const response = await sut.load('any_hash');
 
-    expect(response).toEqual(null);
+    expect(response).toBeNull();
   });
 });
