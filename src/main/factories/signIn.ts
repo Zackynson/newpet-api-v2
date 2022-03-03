@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import env from '@/main/config/env';
 
-import { SignInController } from '@/presentation/controllers';
+import { SignInController } from '@/presentation/controllers/auth';
 import { AuthenticationUseCase } from '@/data/useCases/Auth';
 
 import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersRepository';
