@@ -13,8 +13,12 @@ export class LoadUserByTokenUseCase implements LoadUserByToken {
 
   async load(accessToken: string): Promise<User> {
     const token = await this.tokenDecrypter.decrypt(accessToken);
-
-    await this.loadUserByTokenRepository.loadByToken(token);
+    if (token) {
+      const user = await this.loadUserByTokenRepository.loadByToken(token);
+      if (user?.id) {
+        return user;
+      }
+    }
 
     return null;
   }
