@@ -10,16 +10,30 @@ const makeDecrypter = ():TokenDecrypter => {
   return new DecrypterStub();
 };
 
+type SutTypes = {
+  sut:LoadUserByTokenUseCase,
+  tokenDecrypter: TokenDecrypter
+
+}
+
+const makeSut = ():SutTypes => {
+  const tokenDecrypter = makeDecrypter();
+  const loadUserByToken = new LoadUserByTokenUseCase({
+    tokenDecrypter,
+  });
+
+  return {
+    tokenDecrypter,
+    sut: loadUserByToken,
+  };
+};
+
 describe('LoadUserByTokenUseCase', () => {
   test('Should call decrypter with correct values', async () => {
-    const decrypterStub = makeDecrypter();
-    const decryptSpy = jest.spyOn(decrypterStub, 'decrypt');
+    const { sut, tokenDecrypter } = makeSut();
+    const decryptSpy = jest.spyOn(tokenDecrypter, 'decrypt');
 
-    const loadUserByToken = new LoadUserByTokenUseCase({
-      tokenDecrypter: decrypterStub,
-    });
-
-    await loadUserByToken.load('any_hash');
+    await sut.load('any_hash');
 
     expect(decryptSpy).toBeCalledWith('any_hash');
   });
