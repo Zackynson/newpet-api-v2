@@ -5,7 +5,7 @@ import { SignInController } from '@/presentation/controllers';
 import { AuthenticationUseCase } from '@/data/useCases/Auth';
 
 import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersRepository';
-import { JwtAdapter } from '@/infra/token/JwtAdatper';
+import { JwtAdapter } from '@/infra/cryptography';
 import { BcryptAdapter } from '@/infra/cryptography/BcryptAdapter';
 
 import { EmailValidatorAdapter, PasswordValidatorAdapter } from '@/utils';
