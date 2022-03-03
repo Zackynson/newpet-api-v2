@@ -13,15 +13,17 @@ const makeDecrypter = ():TokenDecrypter => {
   return new DecrypterStub();
 };
 
+const makeFakeUser = ():User => ({
+  id: 'any_id',
+  email: 'any@email.com',
+  password: 'any_password',
+  name: 'any_name',
+});
+
 const makeLoadUserByTokenRepository = ():LoadUserByTokenRepository => {
   class LoadUserByTokenRepositoryStub implements LoadUserByTokenRepository {
     async loadByToken(token: string): Promise<User> {
-      return {
-        id: ' ',
-        email: 'any_email',
-        password: 'any_password',
-        name: 'any_name',
-      };
+      return makeFakeUser();
     }
   }
   return new LoadUserByTokenRepositoryStub();
@@ -84,5 +86,11 @@ describe('LoadUserByTokenUseCase', () => {
     const response = await sut.load('any_hash');
 
     expect(response).toBeNull();
+  });
+
+  test('Should return an user if LoadUserByTokenRepository succeeds', async () => {
+    const { sut } = makeSut();
+    const response = await sut.load('any_hash');
+    expect(response).toEqual(makeFakeUser());
   });
 });
