@@ -1,15 +1,52 @@
-import { HttpRequest } from '@/presentation/protocols';
 import { AuthMiddleware } from '@/presentation/middlewares';
 import { forbidden } from '@/presentation/helpers';
 import { AccessDeniedError } from '@/presentation/errors';
+import { LoadUserByToken } from '@/domain/useCases/User/LoadUserByToken';
+import { User } from '@/domain/entities';
+
+class LoadUserByTokenStub implements LoadUserByToken {
+  async load(_accessToken: string): Promise<User> {
+    return {
+      id: 'any_id',
+      email: 'any@email.com',
+      name: 'any_name',
+      password: 'any_hash',
+    };
+  }
+}
+
+type SutTypes = {
+  loadUserByTokenStub: LoadUserByToken,
+  sut: AuthMiddleware
+}
+
+const makeSut = (): SutTypes => {
+  const loadUserByTokenStub = new LoadUserByTokenStub();
+  const sut = new AuthMiddleware({ loadUserByToken: loadUserByTokenStub });
+
+  return {
+    loadUserByTokenStub, sut,
+  };
+};
 
 describe('Auth Middleware', () => {
   test('Should return 403 if  x-access-token header is not provided', async () => {
-    const sut = new AuthMiddleware();
-    const httpRequest: HttpRequest = {};
+    const { sut } = makeSut();
 
-    const response = await sut.handle(httpRequest);
-
+    const response = await sut.handle({});
     expect(response).toEqual(forbidden(new AccessDeniedError()));
+  });
+
+  test('Should call LoadUserByToken with correct params', async () => {
+    const { sut, loadUserByTokenStub } = makeSut();
+
+    const loadSpy = jest.spyOn(loadUserByTokenStub, 'load');
+
+    await sut.handle({
+      headers: {
+        'x-access-token': 'any_token',
+      },
+    });
+    expect(loadSpy).toBeCalledWith('any_token');
   });
 });
