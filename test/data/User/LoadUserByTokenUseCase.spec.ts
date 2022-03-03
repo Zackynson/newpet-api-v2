@@ -1,5 +1,8 @@
+/* eslint-disable max-classes-per-file */
 import { TokenDecrypter } from '@/data/protocols';
+import { LoadUserByTokenRepository } from '@/data/protocols/Users';
 import { LoadUserByTokenUseCase } from '@/data/useCases/User/LoadUserByTokenUseCase';
+import { User } from '@/domain/entities';
 
 const makeDecrypter = ():TokenDecrypter => {
   class DecrypterStub implements TokenDecrypter {
@@ -10,21 +13,39 @@ const makeDecrypter = ():TokenDecrypter => {
   return new DecrypterStub();
 };
 
+const makeLoadUserByTokenRepository = ():LoadUserByTokenRepository => {
+  class LoadUserByTokenRepositoryStub implements LoadUserByTokenRepository {
+    async loadByToken(token: string): Promise<User> {
+      return {
+        id: ' ',
+        email: 'any_email',
+        password: 'any_password',
+        name: 'any_name',
+      };
+    }
+  }
+  return new LoadUserByTokenRepositoryStub();
+};
+
 type SutTypes = {
   sut:LoadUserByTokenUseCase,
-  tokenDecrypter: TokenDecrypter
+  tokenDecrypter: TokenDecrypter,
+  loadUserByTokenRepository: LoadUserByTokenRepository
 
 }
 
 const makeSut = ():SutTypes => {
   const tokenDecrypter = makeDecrypter();
-  const loadUserByToken = new LoadUserByTokenUseCase({
+  const loadUserByTokenRepository = makeLoadUserByTokenRepository();
+  const sut = new LoadUserByTokenUseCase({
     tokenDecrypter,
+    loadUserByTokenRepository,
   });
 
   return {
     tokenDecrypter,
-    sut: loadUserByToken,
+    loadUserByTokenRepository,
+    sut,
   };
 };
 
@@ -45,5 +66,14 @@ describe('LoadUserByTokenUseCase', () => {
     const response = await sut.load('any_hash');
 
     expect(response).toBeNull();
+  });
+
+  test('Should call LoadUserByTokenRepository with correct values', async () => {
+    const { sut, loadUserByTokenRepository } = makeSut();
+    const loadByTokenSpy = jest.spyOn(loadUserByTokenRepository, 'loadByToken');
+
+    await sut.load('any_hash');
+
+    expect(loadByTokenSpy).toBeCalledWith('any_value');
   });
 });
