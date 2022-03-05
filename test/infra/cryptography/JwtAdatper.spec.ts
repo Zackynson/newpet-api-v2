@@ -22,7 +22,7 @@ const makeFakeUser = ():User => ({
 const makeSut = (): JwtAdapter => new JwtAdapter({ secret: 'secret' });
 
 describe('Jwt Adapter', () => {
-  describe('sign()', () => {
+  describe('generate()', () => {
     test('Should call sign with correct values', async () => {
       const sut = makeSut();
       const signSpy = jest.spyOn(jwt, 'sign');
@@ -44,7 +44,7 @@ describe('Jwt Adapter', () => {
     });
   });
 
-  describe('verify()', () => {
+  describe('decrypt()', () => {
     test('Should call verify with correct values', async () => {
       const sut = makeSut();
       const verifySpy = jest.spyOn(jwt, 'verify');
