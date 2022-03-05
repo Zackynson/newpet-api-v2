@@ -1,1 +1,1 @@
-export * from './IAuthenticationUseCase';
+export * from './Authentication';

@@ -14,17 +14,17 @@ import {
 } from '@/presentation/helpers';
 
 import { MissingParamError, InvalidParamError } from '@/presentation/errors';
-import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
+import { Authentication } from '@/domain/useCases/Auth';
 
 type SignUpControllerConstructor = {
     emailValidator: EmailValidator;
     passwordValidator: PasswordValidator;
-    authenticationUseCase: IAuthenticationUseCase;
+    authenticationUseCase: Authentication;
 }
 export class SignInController implements Controller {
   private readonly emailValidator: EmailValidator;
   private readonly passwordValidator: PasswordValidator;
-  private readonly authenticationUseCase: IAuthenticationUseCase;
+  private readonly authenticationUseCase: Authentication;
 
   constructor(params: SignUpControllerConstructor) {
     Object.assign(this, params);

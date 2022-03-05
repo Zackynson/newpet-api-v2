@@ -1,6 +1,6 @@
 import { Decrypter, TokenGenerator } from '@/data/protocols';
 import { FindUserByEmailRepository } from '@/data/protocols/Users';
-import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
+import { Authentication } from '@/domain/useCases/Auth';
 
 type AuthenticationUseCaseParams = {
   findUserByEmailRepository: FindUserByEmailRepository;
@@ -8,7 +8,7 @@ type AuthenticationUseCaseParams = {
   tokenGenerator: TokenGenerator
 }
 
-export class AuthenticationUseCase implements IAuthenticationUseCase {
+export class AuthenticationUseCase implements Authentication {
   private readonly findUserByEmailRepository: FindUserByEmailRepository;
   private readonly decrypter: Decrypter;
   private readonly tokenGenerator: TokenGenerator;

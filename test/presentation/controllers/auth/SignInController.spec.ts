@@ -5,7 +5,7 @@ import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
 import {
   serverError, badRequest, unauthorized, ok,
 } from '@/presentation/helpers';
-import { IAuthenticationUseCase } from '@/domain/useCases/Auth';
+import { Authentication } from '@/domain/useCases/Auth';
 
 class FakeEmailValidator implements EmailValidator {
   validate(_email: string): boolean {
@@ -18,7 +18,7 @@ class FakePasswordValidator implements PasswordValidator {
   }
 }
 
-class FakeAuthenticationUseCase implements IAuthenticationUseCase {
+class FakeAuthenticationUseCase implements Authentication {
   async auth(_email: string, _password: string): Promise<string> {
     return 'any_token';
   }
@@ -35,7 +35,7 @@ type SutTypes = {
   sut: SignInController,
   emailValidator: EmailValidator,
   passwordValidator: PasswordValidator,
-  authenticationUseCase: IAuthenticationUseCase
+  authenticationUseCase: Authentication
 }
 
 const makeSut = (): SutTypes => {
