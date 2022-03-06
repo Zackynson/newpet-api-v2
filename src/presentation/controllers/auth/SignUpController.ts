@@ -1,4 +1,3 @@
-/* eslint-disable lines-between-class-members */
 import {
   ok,
   badRequest,
@@ -26,14 +25,14 @@ export class SignUpController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      const requiredFields = ['name', 'email', 'password', 'confirmPassword'];
+      const missingField = requiredFields.find((field) => !httpRequest?.body?.[field]);
+
+      if (missingField) return badRequest(new MissingParamError(missingField));
+
       const {
         name, email, password, confirmPassword, avatarUrl,
       } = httpRequest.body || {};
-
-      if (!name) return badRequest(new MissingParamError('name'));
-      if (!email) return badRequest(new MissingParamError('email'));
-      if (!password) return badRequest(new MissingParamError('password'));
-      if (!confirmPassword) return badRequest(new MissingParamError('confirmPassword'));
 
       if (confirmPassword !== password) return badRequest(new InvalidParamError('confirmPassword'));
 
