@@ -5,19 +5,26 @@ import {
   forbidden,
 } from '@/presentation/helpers';
 import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
-import { Controller, EmailValidator, PasswordValidator } from '@/presentation/protocols';
-import { InvalidParamError, MissingParamError, UserAlreadyExistsError } from '@/presentation/errors';
+import {
+  Controller,
+  EmailValidator,
+  PasswordValidator,
+  Validator,
+} from '@/presentation/protocols';
+import { InvalidParamError, UserAlreadyExistsError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
 
 type SignUpControllerConstructor = {
   emailValidator: EmailValidator;
   passwordValidator: PasswordValidator;
+  validator: Validator;
   createUserUseCase: ICreateUserUseCase;
 }
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator;
   private readonly passwordValidator: PasswordValidator;
   private readonly createUserUseCase: ICreateUserUseCase;
+  private readonly validator: Validator;
 
   constructor(params: SignUpControllerConstructor) {
     Object.assign(this, params);
@@ -25,10 +32,8 @@ export class SignUpController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requiredFields = ['name', 'email', 'password', 'confirmPassword'];
-      const missingField = requiredFields.find((field) => !httpRequest?.body?.[field]);
-
-      if (missingField) return badRequest(new MissingParamError(missingField));
+      const haserror = await this.validator.validate(httpRequest.body);
+      if (haserror) return badRequest(haserror);
 
       const {
         name, email, password, confirmPassword, avatarUrl,

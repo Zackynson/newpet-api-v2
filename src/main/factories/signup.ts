@@ -6,11 +6,15 @@ import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersReposit
 import { BcryptAdapter } from '@/infra/cryptography/BcryptAdapter';
 import env from '@/main/config/env';
 
+import { makeSignUpValidator } from '@/main/factories/signupValidator';
+
 export const makeSignUpController = (): SignUpController => {
   const emailValidator = new EmailValidatorAdapter();
   const passwordValidator = new PasswordValidatorAdapter();
   const encryptionHelper = new BcryptAdapter(env.bcryptSaltNumber);
   const mongoUsersRepository = new MongoUsersRepository();
   const createUserUseCase = new CreateUserUseCase({ createUserRepository: mongoUsersRepository, findUserByEmailRepository: mongoUsersRepository, encryptionHelper });
-  return new SignUpController({ emailValidator, passwordValidator, createUserUseCase });
+  return new SignUpController({
+    emailValidator, passwordValidator, createUserUseCase, validator: makeSignUpValidator(),
+  });
 };

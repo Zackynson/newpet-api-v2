@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { EmailValidator, PasswordValidator } from '@/presentation/protocols';
+import { EmailValidator, PasswordValidator, Validator } from '@/presentation/protocols';
 import {
   InvalidParamError,
   MissingParamError,
@@ -11,6 +11,17 @@ import { CreateUserUseCase } from '@/data/useCases/User';
 import { CreateUserParams, CreateUserRepository, FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
+import { badRequest } from '@/presentation/helpers';
+
+const makeFakeRequest = () => ({
+  body: {
+    name: 'any_name',
+    email: 'any_email',
+    password: 'any_password',
+    confirmPassword: 'any_password',
+    avatarUrl: 'any_url',
+  },
+});
 
 class EmailValidatorStub implements EmailValidator {
   validate(_email: string): boolean {
@@ -20,6 +31,11 @@ class EmailValidatorStub implements EmailValidator {
 class PasswordValidatorStub implements PasswordValidator {
   validate(_password: string): boolean {
     return true;
+  }
+}
+class ValidatorStub implements Validator {
+  async validate(_password: string): Promise<Error> {
+    return null;
   }
 }
 
@@ -75,15 +91,20 @@ const makeCreateUserUseCase = (): MakeCreateUserUseCaseTypes => {
 };
 
 const makeSut = () => {
-  const emailValidator = new EmailValidatorStub();
-  const passwordValidator = new PasswordValidatorStub();
   const {
     createUserUseCase,
     fakeCreateUserRepository,
     fakeEncryptionHelper,
     fakeFindUserByEmailRepository,
   } = makeCreateUserUseCase();
-  const sut = new SignUpController({ emailValidator, passwordValidator, createUserUseCase });
+
+  const emailValidator = new EmailValidatorStub();
+  const passwordValidator = new PasswordValidatorStub();
+  const validator = new ValidatorStub();
+
+  const sut = new SignUpController({
+    validator, emailValidator, passwordValidator, createUserUseCase,
+  });
   return {
     sut,
     emailValidator,
@@ -92,46 +113,11 @@ const makeSut = () => {
     fakeCreateUserRepository,
     fakeEncryptionHelper,
     fakeFindUserByEmailRepository,
+    validator,
   };
 };
 
 describe('SignUpController', () => {
-  test('Should returns 400 if no name is provided', async () => {
-    const { sut } = makeSut();
-
-    const request = {
-      body: {
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('name'));
-  });
-
-  test('Should returns 400 if no email is provided', async () => {
-    const { sut } = makeSut();
-
-    const request = {
-      body: {
-        name: 'any_name',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('email'));
-  });
-
   test('Should returns 400 if an invalid mail is provided', async () => {
     const { sut, emailValidator } = makeSut();
     jest.spyOn(emailValidator, 'validate').mockReturnValueOnce(false);
@@ -172,42 +158,6 @@ describe('SignUpController', () => {
     expect(response.data).toEqual(new InvalidParamError('password'));
   });
 
-  test('Should returns 400 if password is not provided', async () => {
-    const { sut } = makeSut();
-
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'invalid_email',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('password'));
-  });
-
-  test('Should returns 400 if passwordConfirmation is not provided', async () => {
-    const { sut } = makeSut();
-
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'invalid_email',
-        password: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('confirmPassword'));
-  });
-
   test('Should returns 400 if passwordConfirmation is different from password', async () => {
     const { sut } = makeSut();
 
@@ -234,15 +184,7 @@ describe('SignUpController', () => {
       throw new Error();
     });
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
+    const request = makeFakeRequest();
 
     const response = await sut.handle(request);
 
@@ -254,15 +196,7 @@ describe('SignUpController', () => {
     const { sut, createUserUseCase } = makeSut();
     const createUserUseCaseSpy = jest.spyOn(createUserUseCase, 'execute');
 
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
+    const request = makeFakeRequest();
 
     await sut.handle(request);
 
@@ -275,13 +209,22 @@ describe('SignUpController', () => {
     });
   });
 
-  test('Should return 400 if no params are provided', async () => {
-    const { sut } = makeSut();
+  test('Should call validation with correctParams', async () => {
+    const { sut, validator } = makeSut();
+    const validateSpy = jest.spyOn(validator, 'validate');
+    const request = makeFakeRequest();
+    await sut.handle(request);
 
-    const response = await sut.handle({});
+    expect(validateSpy).toBeCalledWith(request.body);
+  });
 
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new MissingParamError('name'));
+  test('Should return 400 error if validation returns an error', async () => {
+    const { sut, validator } = makeSut();
+    jest.spyOn(validator, 'validate').mockImplementationOnce(async () => new MissingParamError('any_param'));
+    const request = makeFakeRequest();
+    const promise = await sut.handle(request);
+
+    expect(promise).toEqual(badRequest(new MissingParamError('any_param')));
   });
 
   test('Should return 403 if user already exists', async () => {
