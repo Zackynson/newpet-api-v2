@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import { EmailValidator, PasswordValidator, Validator } from '@/presentation/protocols';
+import { EmailValidator, Validator } from '@/presentation/protocols';
 import {
   InvalidParamError,
   MissingParamError,
@@ -28,11 +28,7 @@ class EmailValidatorStub implements EmailValidator {
     return true;
   }
 }
-class PasswordValidatorStub implements PasswordValidator {
-  validate(_password: string): boolean {
-    return true;
-  }
-}
+
 class ValidatorStub implements Validator {
   async validate(_password: string): Promise<Error> {
     return null;
@@ -99,16 +95,14 @@ const makeSut = () => {
   } = makeCreateUserUseCase();
 
   const emailValidator = new EmailValidatorStub();
-  const passwordValidator = new PasswordValidatorStub();
   const validator = new ValidatorStub();
 
   const sut = new SignUpController({
-    validator, emailValidator, passwordValidator, createUserUseCase,
+    validator, emailValidator, createUserUseCase,
   });
   return {
     sut,
     emailValidator,
-    passwordValidator,
     createUserUseCase,
     fakeCreateUserRepository,
     fakeEncryptionHelper,
@@ -136,26 +130,6 @@ describe('SignUpController', () => {
 
     expect(response.statusCode).toBe(400);
     expect(response.data).toEqual(new InvalidParamError('email'));
-  });
-
-  test('Should returns 400 if an invalid password is provided', async () => {
-    const { sut, passwordValidator } = makeSut();
-    jest.spyOn(passwordValidator, 'validate').mockReturnValueOnce(false);
-
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'any_email',
-        password: 'invalid_password',
-        confirmPassword: 'invalid_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new InvalidParamError('password'));
   });
 
   test('Should returns 400 if passwordConfirmation is different from password', async () => {
