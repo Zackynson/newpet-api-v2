@@ -9,7 +9,7 @@ export class PasswordStrengthValidator implements Validator {
   ) {}
 
   async validate(input: any): Promise<Error> {
-    const isStrongPassword = validator.isStrongPassword(input?.[this.fieldName], this.options);
+    const isStrongPassword = validator.isStrongPassword(input?.[this.fieldName] || '', this.options);
 
     if (!isStrongPassword) {
       return new InvalidParamError(this.fieldName);

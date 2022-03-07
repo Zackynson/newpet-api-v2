@@ -16,11 +16,6 @@ export const forbidden = (error: Error): HttpResponse => ({
   data: error,
 });
 
-export const notFound = (error: Error): HttpResponse => ({
-  statusCode: 404,
-  data: error,
-});
-
 export const serverError = (): HttpResponse => ({
   statusCode: 500,
   data: new ServerError(),
