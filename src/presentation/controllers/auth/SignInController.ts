@@ -23,6 +23,11 @@ type SignUpControllerConstructor = {
     passwordValidator: PasswordValidator;
     authenticationUseCase: Authentication;
 }
+
+type BodyParams = {
+  email?:string,
+  password?:string
+}
 export class SignInController implements Controller {
   private readonly emailValidator: EmailValidator;
   private readonly passwordValidator: PasswordValidator;
@@ -32,12 +37,14 @@ export class SignInController implements Controller {
     Object.assign(this, params);
   }
 
-  async handle(httpRequest:HttpRequest):Promise<HttpResponse> {
+  async handle(httpRequest:HttpRequest<BodyParams>):Promise<HttpResponse> {
     try {
       const requiredFields = ['email', 'password'];
 
       for (const field of requiredFields) {
-        if (!httpRequest.body?.[field]) { return badRequest(new MissingParamError(field)); }
+        if (!httpRequest.body?.[field]) {
+          return badRequest(new MissingParamError(field));
+        }
       }
 
       const { email, password } = httpRequest.body;

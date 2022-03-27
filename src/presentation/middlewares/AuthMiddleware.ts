@@ -10,7 +10,7 @@ export class AuthMiddleware implements Middleware {
     Object.assign(this, params);
   }
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(httpRequest: HttpRequest<any>): Promise<HttpResponse> {
     try {
       const accessToken = httpRequest?.headers?.['x-access-token'];
       if (accessToken) {
@@ -22,6 +22,8 @@ export class AuthMiddleware implements Middleware {
           });
         }
       }
+
+      console.log({ fail: accessToken });
       return forbidden(new AccessDeniedError());
     } catch (error) {
       return serverError();

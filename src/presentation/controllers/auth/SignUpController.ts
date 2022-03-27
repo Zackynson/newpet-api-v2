@@ -1,25 +1,28 @@
-import {
-  ok,
-  badRequest,
-  serverError,
-  forbidden,
-} from '@/presentation/helpers';
-import { HttpRequest, HttpResponse } from '@/presentation/protocols/Http';
-import {
-  Controller,
-  EmailValidator,
-  Validator,
-} from '@/presentation/protocols';
-import { InvalidParamError, UserAlreadyExistsError } from '@/presentation/errors';
 import { ICreateUserUseCase } from '@/domain/useCases/User';
+import { UserAlreadyExistsError } from '@/presentation/errors';
+
+import {
+  HttpRequest, HttpResponse, Controller, Validator,
+} from '@/presentation/protocols';
+
+import {
+  ok, badRequest, serverError, forbidden,
+} from '@/presentation/helpers';
 
 type SignUpControllerConstructor = {
-  emailValidator: EmailValidator;
   validator: Validator;
   createUserUseCase: ICreateUserUseCase;
 }
+
+type BodyParams = {
+  name?:string,
+  email?:string,
+  password?:string,
+  confirmPassword?:string,
+  avatarUrl?:string
+}
+
 export class SignUpController implements Controller {
-  private readonly emailValidator: EmailValidator;
   private readonly createUserUseCase: ICreateUserUseCase;
   private readonly validator: Validator;
 
@@ -27,22 +30,20 @@ export class SignUpController implements Controller {
     Object.assign(this, params);
   }
 
-  async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle(httpRequest: HttpRequest<BodyParams>): Promise<HttpResponse> {
     try {
       const haserror = await this.validator.validate(httpRequest.body);
       if (haserror) return badRequest(haserror);
 
       const {
-        name, email, password, confirmPassword, avatarUrl,
+        name, email, password, avatarUrl,
       } = httpRequest.body || {};
 
-      if (confirmPassword !== password) return badRequest(new InvalidParamError('confirmPassword'));
-
-      const emailIsValid = this.emailValidator.validate(email);
-      if (!emailIsValid) return badRequest(new InvalidParamError('email'));
-
       const user = await this.createUserUseCase.execute({
-        name, email, password, avatarUrl,
+        name,
+        email,
+        password,
+        avatarUrl,
       });
 
       return ok(user);

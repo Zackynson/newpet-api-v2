@@ -1,9 +1,7 @@
 /* eslint-disable max-classes-per-file */
-import { EmailValidator, Validator } from '@/presentation/protocols';
+import { Validator } from '@/presentation/protocols';
 import {
-  InvalidParamError,
   MissingParamError,
-  ServerError,
   UserAlreadyExistsError,
 } from '@/presentation/errors';
 import { SignUpController } from '@/presentation/controllers/auth';
@@ -11,7 +9,7 @@ import { CreateUserUseCase } from '@/data/useCases/User';
 import { CreateUserParams, CreateUserRepository, FindUserByEmailRepository } from '@/data/protocols/Users';
 import { User } from '@/domain/entities';
 import { Encrypter } from '@/data/protocols/Encrypter';
-import { badRequest } from '@/presentation/helpers';
+import { badRequest, forbidden, ok } from '@/presentation/helpers';
 
 const makeFakeRequest = () => ({
   body: {
@@ -22,12 +20,6 @@ const makeFakeRequest = () => ({
     avatarUrl: 'any_url',
   },
 });
-
-class EmailValidatorStub implements EmailValidator {
-  validate(_email: string): boolean {
-    return true;
-  }
-}
 
 class ValidatorStub implements Validator {
   async validate(_password: string): Promise<Error> {
@@ -94,15 +86,13 @@ const makeSut = () => {
     fakeFindUserByEmailRepository,
   } = makeCreateUserUseCase();
 
-  const emailValidator = new EmailValidatorStub();
   const validator = new ValidatorStub();
 
   const sut = new SignUpController({
-    validator, emailValidator, createUserUseCase,
+    validator, createUserUseCase,
   });
   return {
     sut,
-    emailValidator,
     createUserUseCase,
     fakeCreateUserRepository,
     fakeEncryptionHelper,
@@ -112,60 +102,6 @@ const makeSut = () => {
 };
 
 describe('SignUpController', () => {
-  test('Should returns 400 if an invalid mail is provided', async () => {
-    const { sut, emailValidator } = makeSut();
-    jest.spyOn(emailValidator, 'validate').mockReturnValueOnce(false);
-
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'invalid_email',
-        password: 'any_password',
-        confirmPassword: 'any_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new InvalidParamError('email'));
-  });
-
-  test('Should returns 400 if passwordConfirmation is different from password', async () => {
-    const { sut } = makeSut();
-
-    const request = {
-      body: {
-        name: 'any_name',
-        email: 'invalid_email',
-        password: 'any_password',
-        confirmPassword: 'invalid_password',
-        avatarUrl: 'any_url',
-      },
-    };
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(400);
-    expect(response.data).toEqual(new InvalidParamError('confirmPassword'));
-  });
-
-  test('Should returns 500 if emailValidator throws', async () => {
-    const { sut, emailValidator } = makeSut();
-
-    jest.spyOn(emailValidator, 'validate').mockImplementationOnce(() => {
-      throw new Error();
-    });
-
-    const request = makeFakeRequest();
-
-    const response = await sut.handle(request);
-
-    expect(response.statusCode).toBe(500);
-    expect(response.data).toEqual(new ServerError());
-  });
-
   test('Should call CreateUserUseCase.execute with correctParams', async () => {
     const { sut, createUserUseCase } = makeSut();
     const createUserUseCaseSpy = jest.spyOn(createUserUseCase, 'execute');
@@ -222,8 +158,7 @@ describe('SignUpController', () => {
     };
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(403);
-    expect(response.data).toEqual(new UserAlreadyExistsError());
+    expect(response).toEqual(forbidden(new UserAlreadyExistsError()));
   });
 
   test('Should return 200 if valid params are provided', async () => {
@@ -241,14 +176,13 @@ describe('SignUpController', () => {
 
     const response = await sut.handle(request);
 
-    expect(response.statusCode).toBe(200);
-    expect(response.data).toEqual({
+    expect(response).toEqual(ok({
       id: 'valid_id',
       name: 'any_name',
       email: 'any_email',
       password: 'hashed_password',
       avatarUrl: 'any_url',
       pets: [],
-    });
+    }));
   });
 });

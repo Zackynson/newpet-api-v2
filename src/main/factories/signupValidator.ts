@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
-import { PasswordStrengthValidator } from '@/utils';
-import { RequiredFieldsValidator } from '@/utils/RequiredFieldsValidator';
+import { PasswordStrengthValidator, CompareFieldsValidator, RequiredFieldsValidator } from '@/utils';
 import { ValidatorComposite } from '@/utils/ValidatorComposite';
 
 const requiredFields = ['name', 'email', 'password', 'confirmPassword'];
@@ -14,5 +13,7 @@ export const makeSignUpValidator = (): ValidatorComposite => {
     minSymbols: 1,
   });
 
-  return new ValidatorComposite([requiredFieldsValidator, passwordValidator]);
+  const compareFieldsValidator = new CompareFieldsValidator('password', 'confirmPassword');
+
+  return new ValidatorComposite([requiredFieldsValidator, passwordValidator, compareFieldsValidator]);
 };

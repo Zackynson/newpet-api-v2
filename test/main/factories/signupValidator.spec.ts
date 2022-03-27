@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import { ValidatorComposite } from '@/utils/ValidatorComposite';
 import { makeSignUpValidator } from '@/main/factories/signupValidator';
-import { RequiredFieldsValidator, PasswordStrengthValidator } from '@/utils';
+import { RequiredFieldsValidator, PasswordStrengthValidator, CompareFieldsValidator } from '@/utils';
 
 jest.mock('@/utils/ValidatorComposite');
 
@@ -18,6 +18,7 @@ describe('SignupValidator Factory', () => {
         minUppercase: 1,
         minSymbols: 1,
       }),
+      new CompareFieldsValidator('password', 'confirmPassword'),
     ]);
   });
 });

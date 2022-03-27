@@ -4,6 +4,6 @@ import { User } from '@/domain/entities';
 export function format(data: any):User {
   return {
     ...data,
-    id: data?._id,
+    id: data?._id?.toString(),
   };
 }
