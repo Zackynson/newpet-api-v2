@@ -7,8 +7,10 @@ jest.mock('jsonwebtoken', () => ({
     return 'any_token';
   },
 
-  async verify(): Promise<string> {
-    return 'any_value';
+  async verify(): Promise<any> {
+    return {
+      id: 'any_value',
+    };
   },
 }));
 
@@ -54,6 +56,8 @@ describe('Jwt Adapter', () => {
 
     test('Should return a decrypted value to a token', async () => {
       const sut = makeSut();
+      jest.spyOn(jwt, 'verify').mockImplementation(() => ({ id: 'any_value' }));
+
       const response = await sut.decrypt('any_token');
       expect(response).toEqual('any_value');
     });
