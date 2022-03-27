@@ -21,10 +21,8 @@ export class RegisterPetController implements Controller {
 
   async handle(httpRequest: HttpRequest<BodyParams>): Promise<HttpResponse> {
     try {
-      const error = await this.validator.validate(httpRequest);
-      if (error) {
-        return badRequest(error);
-      }
+      const error = await this.validator.validate(httpRequest.body);
+      if (error) { return badRequest(error); }
 
       await this.registerPetUseCase.register({ ...httpRequest.body, ownerId: httpRequest.userId });
 
