@@ -1,6 +1,7 @@
 export type HttpRequest<T> = {
     body?:T | any,
-    headers?:any
+    headers?:any,
+    userId?:string
 }
 
 export type HttpResponse = {

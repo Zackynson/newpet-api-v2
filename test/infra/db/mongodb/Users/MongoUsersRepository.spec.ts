@@ -31,4 +31,30 @@ describe('MongoUsersRepository', () => {
     expect(createdUser.avatarUrl).toBe('any_url.jpeg');
     expect(createdUser.pets).toEqual([]);
   });
+
+  test('Should add a pet id to the users pets array', async () => {
+    const sut = new MongoUsersRepository();
+    const user = {
+      name: 'any_name',
+      email: 'any_email@email.com',
+      password: 'any_password',
+      avatarUrl: 'any_url.jpeg',
+      pets: [],
+    };
+
+    const createdUser = await sut.insert(user);
+
+    expect(createdUser).toBeTruthy();
+    expect(createdUser.id).toBeTruthy();
+    expect(createdUser.pets).toEqual([]);
+
+    await sut.addPet({
+      userId: createdUser.id,
+      petId: 'any_pet_id',
+    });
+
+    const updatedUser = await sut.findByEmail('any_email@email.com');
+
+    expect(updatedUser?.pets).toEqual(['any_pet_id']);
+  });
 });
