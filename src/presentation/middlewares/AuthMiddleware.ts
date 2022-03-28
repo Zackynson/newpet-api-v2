@@ -23,7 +23,6 @@ export class AuthMiddleware implements Middleware {
         }
       }
 
-      console.log({ fail: accessToken });
       return forbidden(new AccessDeniedError());
     } catch (error) {
       return serverError();

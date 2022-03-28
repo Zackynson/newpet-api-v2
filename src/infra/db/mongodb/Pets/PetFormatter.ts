@@ -5,5 +5,6 @@ export function format(data: any):Pet {
   return {
     ...data,
     id: data?._id?.toString(),
+    ownerId: data?.ownerId?.toString(),
   };
 }

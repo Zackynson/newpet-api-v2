@@ -8,12 +8,12 @@ export const adaptMiddleware = (middleware: Middleware) => async (
     headers: req.headers,
   };
 
-  const httpResponse: HttpResponse = await middleware.handle(httpRequest);
-
-  const { statusCode, ...rest } = httpResponse;
+  const authResponse: HttpResponse = await middleware.handle(httpRequest);
+  const { statusCode, ...rest } = authResponse;
 
   if (statusCode === 200) {
-    Object.assign(httpRequest, httpResponse.data);
+    Object.assign(req, { userId: authResponse.data.userId });
+
     return next();
   }
 

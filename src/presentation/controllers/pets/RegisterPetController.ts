@@ -30,7 +30,6 @@ export class RegisterPetController implements Controller {
         message: 'Pet registrado com sucesso',
       });
     } catch (error) {
-      console.log(error);
       return serverError();
     }
   }

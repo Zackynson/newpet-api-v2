@@ -22,11 +22,9 @@ describe('SignUp Route', () => {
     })
       .expect(200);
 
-    const res = await request(app).post('/signin').send({
+    await request(app).post('/signin').send({
       email: 'test@email.com',
       password: 'testeNewPet$123',
-    });
-
-    console.log(res);
+    }).expect(200);
   });
 });

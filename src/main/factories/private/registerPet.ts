@@ -15,5 +15,7 @@ export const makeRegisterPetController = (): RegisterPetController => {
     updateUserPetsRepository,
   });
 
-  return new RegisterPetController({ registerPetUseCase, validator: makeRegisterPetValidator() });
+  const validator = makeRegisterPetValidator();
+
+  return new RegisterPetController({ registerPetUseCase, validator });
 };

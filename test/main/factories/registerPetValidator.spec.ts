@@ -2,6 +2,7 @@
 import { ValidatorComposite } from '@/utils/ValidatorComposite';
 import { RequiredFieldsValidator } from '@/utils';
 import { makeRegisterPetValidator } from '@/main/factories/private/registerPetValidator';
+import { AllowedValuesValidator } from '@/utils/AllowedValuesValidator';
 
 jest.mock('@/utils/ValidatorComposite');
 
@@ -12,6 +13,13 @@ describe('SignupValidator Factory', () => {
     makeRegisterPetValidator();
     expect(ValidatorComposite).toBeCalledWith([
       new RequiredFieldsValidator(requiredFields),
+      new AllowedValuesValidator('category', [
+        'cat',
+        'bird',
+        'dog',
+        'other',
+      ],
+      ),
     ]);
   });
 });

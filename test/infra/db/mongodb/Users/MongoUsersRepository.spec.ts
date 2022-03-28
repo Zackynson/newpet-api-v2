@@ -1,3 +1,4 @@
+import { ObjectId } from 'mongodb';
 import { MongoUsersRepository } from '@/infra/db/mongodb/Users/MongoUsersRepository';
 
 import { MongoHelper } from '@/infra/db/mongodb/helpers/MongoHelper';
@@ -50,11 +51,11 @@ describe('MongoUsersRepository', () => {
 
     await sut.addPet({
       userId: createdUser.id,
-      petId: 'any_pet_id',
+      petId: createdUser.id,
     });
 
     const updatedUser = await sut.findByEmail('any_email@email.com');
 
-    expect(updatedUser?.pets).toEqual(['any_pet_id']);
+    expect(updatedUser?.pets).toEqual([new ObjectId(createdUser.id)]);
   });
 });

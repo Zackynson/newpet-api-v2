@@ -36,7 +36,7 @@ implements
 
     await usersCollection.updateOne({ _id: new ObjectId(userId) }, {
       $push: {
-        pets: petId,
+        pets: new ObjectId(petId),
       },
     });
   }

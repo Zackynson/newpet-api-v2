@@ -11,6 +11,7 @@ export class RegisterPetUseCase implements RegisterPet {
   }
 
   async register(params: RegisterPetDTO): Promise<void> {
+    if (!params.ownerId) throw new Error('invalid ownerId');
     const pet = await this.registerPetRepository.register(params);
 
     return this.updateUserPetsRepository.addPet({
